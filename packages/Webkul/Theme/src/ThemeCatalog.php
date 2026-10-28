@@ -142,7 +142,7 @@ class ThemeCatalog
     }
 
     /**
-     * Resolve a catalog screenshot to a url, treating anything not remote as a bundled admin asset.
+     * Resolve a catalog screenshot to a url: a remote one as it is, a public path through the asset url, and anything else as a bundled admin asset.
      */
     protected function screenshotUrl(?string $screenshot): ?string
     {
@@ -152,6 +152,10 @@ class ThemeCatalog
 
         if (Str::startsWith($screenshot, ['http://', 'https://'])) {
             return $screenshot;
+        }
+
+        if (Str::startsWith($screenshot, '/')) {
+            return asset(ltrim($screenshot, '/'));
         }
 
         return bagisto_asset($screenshot, 'admin');

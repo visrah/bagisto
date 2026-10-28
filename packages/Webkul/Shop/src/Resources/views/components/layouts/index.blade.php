@@ -4,11 +4,22 @@
     'hasFooter'  => true,
 ])
 
+@php
+    $themeCode = themes()->current()?->code ?? 'default';
+
+    $layout = (array) config("themes.shop.{$themeCode}.layout", []);
+@endphp
+
 <!DOCTYPE html>
 
 <html
     lang="{{ app()->getLocale() }}"
     dir="{{ core()->getCurrentLocale()->direction }}"
+    data-theme="{{ $themeCode }}"
+    data-header="{{ $layout['header'] ?? 'classic' }}"
+    data-card="{{ $layout['card'] ?? 'soft' }}"
+    data-grid="{{ $layout['grid'] ?? 'airy' }}"
+    data-footer="{{ $layout['footer'] ?? 'rich' }}"
 >
     <head>
 
@@ -53,28 +64,6 @@
         />
 
         @bagistoVite(['src/Resources/assets/css/app.css', 'src/Resources/assets/js/app.js'])
-
-        <link
-            rel="preconnect"
-            href="https://fonts.googleapis.com"
-            crossorigin
-        />
-
-        <link
-            rel="preconnect"
-            href="https://fonts.gstatic.com"
-            crossorigin
-        />
-
-        <link
-            rel="preload" as="style"
-            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap"
-        />
-
-        <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap"
-        />
 
         @stack('styles')
 

@@ -4,6 +4,7 @@ namespace Webkul\Admin\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -99,11 +100,31 @@ class ConfigurationController extends Controller
             }
         }
 
-        $this->coreConfigRepository->create($request->except(['_token', 'admin_locale']));
+        $submitted = $request->except(['_token', 'admin_locale']);
+
+        abort_if($this->touchesHiddenConfiguration($submitted), 403);
+
+        $this->coreConfigRepository->create($submitted);
 
         session()->flash('success', trans('admin::app.configuration.index.save-message'));
 
         return redirect()->back();
+    }
+
+    /**
+     * Whether a submitted form reaches a section that is hidden from the screen.
+     *
+     * @param  array<string, mixed>  $submitted
+     */
+    protected function touchesHiddenConfiguration(array $submitted): bool
+    {
+        foreach (array_keys(Arr::dot(Arr::except($submitted, ['channel', 'locale']))) as $path) {
+            if (system_config()->isHidden($path)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

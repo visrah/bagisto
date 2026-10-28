@@ -7,7 +7,7 @@
             <span class="icon-calendar text-2xl"></span>
 
             <div class="grid grid-cols-1 gap-1.5 text-sm font-medium">
-                <p class="text-[#6E6E6E]">
+                <p class="text-zinc-500">
                     @lang('shop::app.products.view.type.booking.default.slot-duration') :
                 </p>
 

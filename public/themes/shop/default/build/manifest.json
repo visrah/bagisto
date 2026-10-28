@@ -1,27 +1,155 @@
 {
-  "_veeValidate-o7oVFGhs.js": {
-    "file": "assets/veeValidate-o7oVFGhs.js",
+  "_veeValidate-CJr41VAB.js": {
+    "file": "assets/veeValidate-CJr41VAB.js",
     "name": "veeValidate",
     "imports": [
-      "_vue-Cbfb4A7j.js"
+      "_vue-ChCmrlNY.js"
     ]
   },
-  "_vendor-DdbqHu3R.js": {
-    "file": "assets/vendor-DdbqHu3R.js",
+  "_vendor-D15PBOPP.js": {
+    "file": "assets/vendor-D15PBOPP.js",
     "name": "vendor"
   },
-  "_vue-Cbfb4A7j.js": {
-    "file": "assets/vue-Cbfb4A7j.js",
+  "_vue-ChCmrlNY.js": {
+    "file": "assets/vue-ChCmrlNY.js",
     "name": "vue"
   },
   "src/Resources/assets/css/app.css": {
-    "file": "assets/app-CIcoZzNJ.css",
+    "file": "assets/app-BmfOOTOX.css",
     "src": "src/Resources/assets/css/app.css",
     "isEntry": true
+  },
+  "src/Resources/assets/fonts/LICENSE-poppins.txt": {
+    "file": "assets/LICENSE-poppins-Bqeo6hyn.txt",
+    "src": "src/Resources/assets/fonts/LICENSE-poppins.txt"
   },
   "src/Resources/assets/fonts/bagisto-shop.woff": {
     "file": "assets/bagisto-shop-BHAKyv0r.woff",
     "src": "src/Resources/assets/fonts/bagisto-shop.woff"
+  },
+  "src/Resources/assets/fonts/poppins-latin-400-normal.woff2": {
+    "file": "assets/poppins-latin-400-normal-cpxAROuN.woff2",
+    "src": "src/Resources/assets/fonts/poppins-latin-400-normal.woff2"
+  },
+  "src/Resources/assets/fonts/poppins-latin-500-normal.woff2": {
+    "file": "assets/poppins-latin-500-normal-C8OXljZJ.woff2",
+    "src": "src/Resources/assets/fonts/poppins-latin-500-normal.woff2"
+  },
+  "src/Resources/assets/fonts/poppins-latin-600-normal.woff2": {
+    "file": "assets/poppins-latin-600-normal-zEkxB9Mr.woff2",
+    "src": "src/Resources/assets/fonts/poppins-latin-600-normal.woff2"
+  },
+  "src/Resources/assets/fonts/poppins-latin-700-normal.woff2": {
+    "file": "assets/poppins-latin-700-normal-Qrb0O0WB.woff2",
+    "src": "src/Resources/assets/fonts/poppins-latin-700-normal.woff2"
+  },
+  "src/Resources/assets/fonts/poppins-latin-800-normal.woff2": {
+    "file": "assets/poppins-latin-800-normal-Bd8-pIP1.woff2",
+    "src": "src/Resources/assets/fonts/poppins-latin-800-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-cormorant-garamond.txt": {
+    "file": "assets/LICENSE-cormorant-garamond-D7xK62ux.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-cormorant-garamond.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-dm-sans.txt": {
+    "file": "assets/LICENSE-dm-sans-RYU4oxf-.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-dm-sans.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-dm-serif-display.txt": {
+    "file": "assets/LICENSE-dm-serif-display-PCly6MP9.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-dm-serif-display.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-fraunces.txt": {
+    "file": "assets/LICENSE-fraunces-5Eq2pjw3.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-fraunces.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-fredoka.txt": {
+    "file": "assets/LICENSE-fredoka-6rPSWlY1.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-fredoka.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-inter.txt": {
+    "file": "assets/LICENSE-inter-CHm4TUe6.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-inter.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-jost.txt": {
+    "file": "assets/LICENSE-jost-BGPnIdNG.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-jost.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-nunito.txt": {
+    "file": "assets/LICENSE-nunito-BcxFWefO.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-nunito.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-oswald.txt": {
+    "file": "assets/LICENSE-oswald-ppDh2LBi.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-oswald.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-playfair-display.txt": {
+    "file": "assets/LICENSE-playfair-display-CmZlwQY9.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-playfair-display.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-source-sans-3.txt": {
+    "file": "assets/LICENSE-source-sans-3-BG-3VIsz.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-source-sans-3.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-source-serif-4.txt": {
+    "file": "assets/LICENSE-source-sans-3-BG-3VIsz.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-source-sans-3.txt"
+  },
+  "src/Resources/assets/fonts/themes/LICENSE-space-grotesk.txt": {
+    "file": "assets/LICENSE-space-grotesk-DCUOMVzR.txt",
+    "src": "src/Resources/assets/fonts/themes/LICENSE-space-grotesk.txt"
+  },
+  "src/Resources/assets/fonts/themes/cormorant-garamond-latin-wght-normal.woff2": {
+    "file": "assets/cormorant-garamond-latin-wght-normal-CUoBjw-S.woff2",
+    "src": "src/Resources/assets/fonts/themes/cormorant-garamond-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/dm-sans-latin-wght-normal.woff2": {
+    "file": "assets/dm-sans-latin-wght-normal-Xz1IZZA0.woff2",
+    "src": "src/Resources/assets/fonts/themes/dm-sans-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/dm-serif-display-latin-400-normal.woff2": {
+    "file": "assets/dm-serif-display-latin-400-normal-C5_t9oOD.woff2",
+    "src": "src/Resources/assets/fonts/themes/dm-serif-display-latin-400-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/fraunces-latin-wght-normal.woff2": {
+    "file": "assets/fraunces-latin-wght-normal-ukD16Tqj.woff2",
+    "src": "src/Resources/assets/fonts/themes/fraunces-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/fredoka-latin-wght-normal.woff2": {
+    "file": "assets/fredoka-latin-wght-normal-DM6njrJ3.woff2",
+    "src": "src/Resources/assets/fonts/themes/fredoka-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/inter-latin-wght-normal.woff2": {
+    "file": "assets/inter-latin-wght-normal-Dx4kXJAl.woff2",
+    "src": "src/Resources/assets/fonts/themes/inter-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/jost-latin-wght-normal.woff2": {
+    "file": "assets/jost-latin-wght-normal-ObQm3Zd1.woff2",
+    "src": "src/Resources/assets/fonts/themes/jost-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/nunito-latin-wght-normal.woff2": {
+    "file": "assets/nunito-latin-wght-normal-BzFMHfZw.woff2",
+    "src": "src/Resources/assets/fonts/themes/nunito-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/oswald-latin-wght-normal.woff2": {
+    "file": "assets/oswald-latin-wght-normal-CzS3kehr.woff2",
+    "src": "src/Resources/assets/fonts/themes/oswald-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/playfair-display-latin-wght-normal.woff2": {
+    "file": "assets/playfair-display-latin-wght-normal-BOwq7MWX.woff2",
+    "src": "src/Resources/assets/fonts/themes/playfair-display-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/source-sans-3-latin-wght-normal.woff2": {
+    "file": "assets/source-sans-3-latin-wght-normal-Bo_j9asI.woff2",
+    "src": "src/Resources/assets/fonts/themes/source-sans-3-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/source-serif-4-latin-wght-normal.woff2": {
+    "file": "assets/source-serif-4-latin-wght-normal-DMe4EKeb.woff2",
+    "src": "src/Resources/assets/fonts/themes/source-serif-4-latin-wght-normal.woff2"
+  },
+  "src/Resources/assets/fonts/themes/space-grotesk-latin-wght-normal.woff2": {
+    "file": "assets/space-grotesk-latin-wght-normal-BhU9QXUp.woff2",
+    "src": "src/Resources/assets/fonts/themes/space-grotesk-latin-wght-normal.woff2"
   },
   "src/Resources/assets/images/cash-on-delivery.png": {
     "file": "assets/cash-on-delivery-Ck2rBtSq.png",
@@ -116,14 +244,14 @@
     "src": "src/Resources/assets/images/wishlist.png"
   },
   "src/Resources/assets/js/app.js": {
-    "file": "assets/app-tr7efcxr.js",
+    "file": "assets/app-z-420zcY.js",
     "name": "app",
     "src": "src/Resources/assets/js/app.js",
     "isEntry": true,
     "imports": [
-      "_vue-Cbfb4A7j.js",
-      "_vendor-DdbqHu3R.js",
-      "_veeValidate-o7oVFGhs.js"
+      "_vue-ChCmrlNY.js",
+      "_vendor-D15PBOPP.js",
+      "_veeValidate-CJr41VAB.js"
     ],
     "css": [
       "assets/app-DPIY9Iht.css"

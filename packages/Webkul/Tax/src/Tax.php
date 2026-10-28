@@ -2,6 +2,8 @@
 
 namespace Webkul\Tax;
 
+use Illuminate\Support\Collection;
+
 class Tax
 {
     /**
@@ -204,6 +206,9 @@ class Tax
      * This method will check tax for the current address. If applicable then
      * custom operation can be done.
      *
+     * The rates of the address's own country are tried first; a rate whose country is `*` applies to every
+     * other country, so a shop can charge one rate to the rest of the world.
+     *
      * @param  object  $address
      * @param  object  $taxCategory
      * @param  \Closure  $operation
@@ -214,14 +219,28 @@ class Tax
             return;
         }
 
-        $taxRates = $taxCategory->tax_rates()->where([
-            'country' => $address->country,
-        ])->orderBy('tax_rate', 'desc')->get();
+        foreach ([$address->country, '*'] as $country) {
+            $rate = $this->findMatchingRate(
+                $taxCategory->tax_rates()->where('country', $country)->orderBy('tax_rate', 'desc')->get(),
+                $address
+            );
 
-        if (! $taxRates->count()) {
-            return;
+            if ($rate) {
+                $operation($rate);
+
+                return;
+            }
         }
+    }
 
+    /**
+     * The first rate, highest first, whose state and zip code fit the address.
+     *
+     * @param  Collection  $taxRates
+     * @param  object  $address
+     */
+    protected function findMatchingRate($taxRates, $address)
+    {
         foreach ($taxRates as $rate) {
             if (
                 ! in_array(trim($rate->state), ['*', ''])
@@ -230,29 +249,25 @@ class Tax
                 continue;
             }
 
-            $haveTaxRate = false;
-
             if (! $rate->is_zip) {
                 if (
                     empty($rate->zip_code)
                     || in_array($rate->zip_code, ['*', $address->postcode])
                 ) {
-                    $haveTaxRate = true;
+                    return $rate;
                 }
-            } else {
-                if (
-                    $address->postcode >= $rate->zip_from
-                    && $address->postcode <= $rate->zip_to
-                ) {
-                    $haveTaxRate = true;
-                }
+
+                continue;
             }
 
-            if ($haveTaxRate) {
-                $operation($rate);
-
-                break;
+            if (
+                $address->postcode >= $rate->zip_from
+                && $address->postcode <= $rate->zip_to
+            ) {
+                return $rate;
             }
         }
+
+        return null;
     }
 }

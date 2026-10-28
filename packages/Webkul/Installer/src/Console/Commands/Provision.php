@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Throwable;
 use Webkul\Installer\Helpers\DatabaseManager;
 use Webkul\Installer\Helpers\ShopDefaults;
+use Webkul\ShopSetup\Roles\ShopOwnerRole;
 
 class Provision extends Command
 {
@@ -62,6 +63,8 @@ class Provision extends Command
     protected function provision(DatabaseManager $databaseManager): int
     {
         if ($databaseManager->isInstalled()) {
+            app(ShopDefaults::class)->apply($this->shopOptions());
+
             $this->components->info('Bagisto is already provisioned.');
 
             return self::SUCCESS;
@@ -118,7 +121,7 @@ class Provision extends Command
     }
 
     /**
-     * Seed, create the admin and write the shop defaults in one transaction, so a failure leaves no half-built shop behind.
+     * Seed, create the admin, write the shop defaults and give the owner their role in one transaction, so a failure leaves no half-built shop behind.
      *
      * The seeders report their own failures and return false instead of throwing, so the outcome decides between commit and rollback.
      *
@@ -133,11 +136,11 @@ class Provision extends Command
             $provisioned = $databaseManager->seed($seed) && $databaseManager->createAdminUser($admin);
 
             if ($provisioned) {
-                app(ShopDefaults::class)->apply([
-                    'country' => env('SHOP_COUNTRY'),
-                    'store_name' => env('SHOP_STORE_NAME'),
-                    'vat_number' => env('SHOP_TAX_ID'),
-                ]);
+                app(ShopDefaults::class)->apply($this->shopOptions());
+
+                if (config('shop_setup.admin_mode') !== 'full') {
+                    app(ShopOwnerRole::class)->assignTo(DatabaseManager::USER_ID);
+                }
             }
         } catch (Throwable $exception) {
             report($exception);
@@ -148,5 +151,19 @@ class Provision extends Command
         $provisioned ? DB::commit() : DB::rollBack();
 
         return $provisioned;
+    }
+
+    /**
+     * The shop's origin as the environment states it.
+     *
+     * @return array{country: mixed, store_name: mixed, vat_number: mixed}
+     */
+    protected function shopOptions(): array
+    {
+        return [
+            'country' => env('SHOP_COUNTRY'),
+            'store_name' => env('SHOP_STORE_NAME'),
+            'vat_number' => env('SHOP_TAX_ID'),
+        ];
     }
 }

@@ -18,6 +18,7 @@
 @endphp
 
 <footer
+    data-slot="footer"
     class="mt-9 bg-lightOrange max-sm:mt-10"
     @if ($section && $sectionRepository->isPreviewing())
         data-section-id="{{ $section->id }}"
@@ -46,9 +47,9 @@
         <!-- For Mobile view -->
         <x-shop::accordion
             :is-active="false"
-            class="hidden w-full! rounded-xl border-2! border-[#e9decc]! max-1060:block max-sm:rounded-lg"
+            class="hidden w-full! rounded-xl border-2! border-footer-line! max-1060:block max-sm:rounded-lg"
         >
-            <x-slot:header class="rounded-t-lg bg-[#F1EADF] font-medium max-md:p-2.5 max-sm:px-3 max-sm:py-2 max-sm:text-sm">
+            <x-slot:header class="rounded-t-lg bg-footer font-medium max-md:p-2.5 max-sm:px-3 max-sm:py-2 max-sm:text-sm">
                 @lang('shop::app.components.layouts.footer.footer-content')
             </x-slot>
 
@@ -101,7 +102,7 @@
                         <div class="relative w-full">
                             <x-shop::form.control-group.control
                                 type="email"
-                                class="block w-105 max-w-full rounded-xl border-2 border-[#e9decc] bg-[#F1EADF] px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-0 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
+                                class="block w-105 max-w-full rounded-xl border-2 border-footer-line bg-footer px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-0 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
                                 name="email"
                                 rules="required|email"
                                 label="Email"
@@ -127,7 +128,7 @@
         {!! view_render_event('bagisto.shop.layout.footer.newsletter_subscription.after') !!}
     </div>
 
-    <div class="flex justify-between bg-[#F1EADF] px-15 py-3.5 max-md:justify-center max-sm:px-5">
+    <div class="flex justify-between bg-footer px-15 py-3.5 max-md:justify-center max-sm:px-5">
         {!! view_render_event('bagisto.shop.layout.footer.footer_text.before') !!}
 
         <p class="text-sm text-zinc-600 max-md:text-center">

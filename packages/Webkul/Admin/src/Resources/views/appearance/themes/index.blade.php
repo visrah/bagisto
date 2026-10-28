@@ -150,26 +150,6 @@
                                         </button>
                                     @endif
 
-                                    <a
-                                        class="primary-button"
-                                        :href="theme.url"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        v-if="! theme.is_installed && theme.url"
-                                    >
-                                        @lang('admin::app.appearance.themes.index.buy-btn')
-                                    </a>
-
-                                    <a
-                                        class="secondary-button"
-                                        :href="theme.demo_url"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        v-if="! theme.is_installed && theme.demo_url"
-                                    >
-                                        @lang('admin::app.appearance.themes.index.preview-btn')
-                                    </a>
-
                                     @if (bouncer()->hasPermission('appearance.sections'))
                                         <a
                                             class="secondary-button"
@@ -290,7 +270,7 @@
 
                 computed: {
                     /**
-                     * Installed themes and themes on offer under headings of their own, leaving out an empty one.
+                     * The themes this store ships with, under a heading of their own.
                      */
                     groups() {
                         return [
@@ -298,10 +278,6 @@
                                 key: 'installed',
                                 label: "@lang('admin::app.appearance.themes.index.my-themes')",
                                 themes: this.themes.filter(theme => theme.is_installed),
-                            }, {
-                                key: 'available',
-                                label: "@lang('admin::app.appearance.themes.index.buy-themes')",
-                                themes: this.themes.filter(theme => ! theme.is_installed),
                             },
                         ].filter(group => group.themes.length);
                     },

@@ -1,0 +1,425 @@
+/**
+ * Store themes.
+ *
+ * A theme is a block of variables on the root element, selected by the `data-theme` attribute that
+ * the layout sets from the channel's theme. Tailwind's utilities read these variables, so a block restyles
+ * the whole storefront without a build of its own. The default theme sets nothing and keeps the look the
+ * storefront ships with.
+ *
+ * Each block names its surface and ink colours, and the shared rule below derives every grey and every
+ * link blue from them, so a block only lists what is its own: palette, fonts, corner radius and heading style.
+ */
+
+/* Poppins and DM Serif Display, the default look, served from this site rather than a font CDN. */
+@font-face {
+    font-family: "Poppins";
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/poppins-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Poppins";
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/poppins-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Poppins";
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/poppins-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Poppins";
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/poppins-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Poppins";
+    font-weight: 800;
+    font-display: swap;
+    src: url("../fonts/poppins-latin-800-normal.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "DM Serif Display";
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/themes/dm-serif-display-latin-400-normal.woff2") format("woff2");
+}
+
+/* The families the themes ask for. Open fonts under the SIL OFL 1.1; see fonts/themes/LICENSE-*.txt. */
+@font-face {
+    font-family: "Cormorant Garamond Variable";
+    font-weight: 300 700;
+    font-display: swap;
+    src: url("../fonts/themes/cormorant-garamond-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "DM Sans Variable";
+    font-weight: 100 1000;
+    font-display: swap;
+    src: url("../fonts/themes/dm-sans-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Fraunces Variable";
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("../fonts/themes/fraunces-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Fredoka Variable";
+    font-weight: 300 700;
+    font-display: swap;
+    src: url("../fonts/themes/fredoka-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Inter Variable";
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("../fonts/themes/inter-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Jost Variable";
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("../fonts/themes/jost-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Nunito Variable";
+    font-weight: 200 1000;
+    font-display: swap;
+    src: url("../fonts/themes/nunito-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Oswald Variable";
+    font-weight: 200 700;
+    font-display: swap;
+    src: url("../fonts/themes/oswald-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Playfair Display Variable";
+    font-weight: 400 900;
+    font-display: swap;
+    src: url("../fonts/themes/playfair-display-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Source Sans 3 Variable";
+    font-weight: 200 900;
+    font-display: swap;
+    src: url("../fonts/themes/source-sans-3-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Source Serif 4 Variable";
+    font-weight: 200 900;
+    font-display: swap;
+    src: url("../fonts/themes/source-serif-4-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+    font-family: "Space Grotesk Variable";
+    font-weight: 300 700;
+    font-display: swap;
+    src: url("../fonts/themes/space-grotesk-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+[data-theme="apparel"],
+[data-theme="electronics"],
+[data-theme="food"],
+[data-theme="home"],
+[data-theme="beauty"],
+[data-theme="kids"],
+[data-theme="sports"],
+[data-theme="jewelry"],
+[data-theme="books"] {
+    --color-zinc-50: color-mix(in oklab, var(--theme-ink) 3%, var(--theme-surface));
+    --color-zinc-100: color-mix(in oklab, var(--theme-ink) 6%, var(--theme-surface));
+    --color-zinc-200: color-mix(in oklab, var(--theme-ink) 12%, var(--theme-surface));
+    --color-zinc-300: color-mix(in oklab, var(--theme-ink) 22%, var(--theme-surface));
+    --color-zinc-400: color-mix(in oklab, var(--theme-ink) 42%, var(--theme-surface));
+    --color-zinc-500: color-mix(in oklab, var(--theme-ink) 58%, var(--theme-surface));
+    --color-zinc-600: color-mix(in oklab, var(--theme-ink) 72%, var(--theme-surface));
+    --color-zinc-700: color-mix(in oklab, var(--theme-ink) 82%, var(--theme-surface));
+    --color-zinc-800: color-mix(in oklab, var(--theme-ink) 90%, var(--theme-surface));
+    --color-zinc-900: color-mix(in oklab, var(--theme-ink) 95%, var(--theme-surface));
+    --color-zinc-950: var(--theme-ink);
+
+    --color-gray-50: var(--color-zinc-50);
+    --color-gray-100: var(--color-zinc-100);
+    --color-gray-200: var(--color-zinc-200);
+    --color-gray-300: var(--color-zinc-300);
+    --color-gray-400: var(--color-zinc-400);
+    --color-gray-500: var(--color-zinc-500);
+    --color-gray-600: var(--color-zinc-600);
+    --color-gray-700: var(--color-zinc-700);
+    --color-gray-800: var(--color-zinc-800);
+    --color-gray-900: var(--color-zinc-900);
+
+    --color-blue-50: color-mix(in oklab, var(--color-darkBlue) 8%, var(--theme-surface));
+    --color-blue-400: color-mix(in oklab, var(--color-darkBlue) 70%, var(--theme-surface));
+    --color-blue-500: color-mix(in oklab, var(--color-darkBlue) 85%, var(--theme-surface));
+    --color-blue-600: var(--color-darkBlue);
+    --color-blue-700: color-mix(in oklab, var(--color-darkBlue) 85%, var(--theme-ink));
+
+    --color-footer: color-mix(in oklab, var(--theme-ink) 5%, var(--theme-surface));
+    --color-footer-line: color-mix(in oklab, var(--theme-ink) 12%, var(--theme-surface));
+    --color-header-line: color-mix(in oklab, var(--theme-ink) 8%, var(--theme-surface));
+}
+
+[data-theme="apparel"],
+[data-theme="electronics"],
+[data-theme="food"],
+[data-theme="home"],
+[data-theme="beauty"],
+[data-theme="kids"],
+[data-theme="sports"],
+[data-theme="jewelry"],
+[data-theme="books"] {
+    background-color: var(--theme-surface);
+    color: var(--theme-ink);
+}
+
+:is([data-theme="apparel"], [data-theme="electronics"], [data-theme="food"], [data-theme="home"], [data-theme="beauty"], [data-theme="kids"], [data-theme="sports"], [data-theme="jewelry"], [data-theme="books"]) .font-dmserif {
+    text-transform: var(--theme-heading-case, none);
+    letter-spacing: var(--theme-heading-tracking, normal);
+}
+
+/* Fashion & Apparel */
+[data-theme="apparel"] {
+    --theme-surface: #fcfaf6;
+    --theme-ink: #1a1511;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #1a1511;
+    --color-lightOrange: #f4f0e9;
+    --color-darkBlue: #1a1511;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "Inter Variable", system-ui, sans-serif;
+    --font-dmserif: "Fraunces Variable", Georgia, serif;
+
+    --radius-md: 0;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-2xl: 0;
+    --radius-3xl: 0;
+
+    --theme-heading-case: none;
+    --theme-heading-tracking: 0;
+}
+
+/* Electronics & Tech */
+[data-theme="electronics"] {
+    --theme-surface: #090f16;
+    --theme-ink: #eff2f6;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #29c9fa;
+    --color-lightOrange: #1b2531;
+    --color-darkBlue: #29c9fa;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "Inter Variable", system-ui, sans-serif;
+    --font-dmserif: "Space Grotesk Variable", system-ui, sans-serif;
+
+    --radius-md: 0.75rem;
+    --radius-lg: 0.938rem;
+    --radius-xl: 1.2rem;
+    --radius-2xl: 1.65rem;
+    --radius-3xl: 2.25rem;
+
+    --theme-heading-case: none;
+    --theme-heading-tracking: -0.02em;
+}
+
+/* Food, Grocery & Cafe */
+[data-theme="food"] {
+    --theme-surface: #fdfaf0;
+    --theme-ink: #172c1c;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #007834;
+    --color-lightOrange: #f0f1d3;
+    --color-darkBlue: #007834;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "Nunito Variable", system-ui, sans-serif;
+    --font-dmserif: "Nunito Variable", system-ui, sans-serif;
+
+    --radius-md: 1rem;
+    --radius-lg: 1.25rem;
+    --radius-xl: 1.6rem;
+    --radius-2xl: 2.2rem;
+    --radius-3xl: 3rem;
+
+    --theme-heading-case: none;
+    --theme-heading-tracking: 0;
+}
+
+/* Home & Furniture */
+[data-theme="home"] {
+    --theme-surface: #fbf6ee;
+    --theme-ink: #2f241c;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #7f4730;
+    --color-lightOrange: #f4ecde;
+    --color-darkBlue: #7f4730;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "DM Sans Variable", system-ui, sans-serif;
+    --font-dmserif: "DM Serif Display", Georgia, serif;
+
+    --radius-md: 0.5rem;
+    --radius-lg: 0.625rem;
+    --radius-xl: 0.8rem;
+    --radius-2xl: 1.1rem;
+    --radius-3xl: 1.5rem;
+
+    --theme-heading-case: none;
+    --theme-heading-tracking: 0;
+}
+
+/* Beauty & Wellness */
+[data-theme="beauty"] {
+    --theme-surface: #fff9f8;
+    --theme-ink: #3a2929;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #854a4f;
+    --color-lightOrange: #feebeb;
+    --color-darkBlue: #854a4f;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "Jost Variable", system-ui, sans-serif;
+    --font-dmserif: "Cormorant Garamond Variable", Georgia, serif;
+
+    --radius-md: 0.9rem;
+    --radius-lg: 1.125rem;
+    --radius-xl: 1.44rem;
+    --radius-2xl: 1.98rem;
+    --radius-3xl: 2.7rem;
+
+    --theme-heading-case: none;
+    --theme-heading-tracking: 0.01em;
+}
+
+/* Kids & Toys */
+[data-theme="kids"] {
+    --theme-surface: #fefcf3;
+    --theme-ink: #1d2248;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #3f62f3;
+    --color-lightOrange: #ffddff;
+    --color-darkBlue: #3f62f3;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "Nunito Variable", system-ui, sans-serif;
+    --font-dmserif: "Fredoka Variable", system-ui, sans-serif;
+
+    --radius-md: 1.1rem;
+    --radius-lg: 1.375rem;
+    --radius-xl: 1.76rem;
+    --radius-2xl: 2.42rem;
+    --radius-3xl: 3.3rem;
+
+    --theme-heading-case: none;
+    --theme-heading-tracking: 0;
+}
+
+/* Sports & Outdoors */
+[data-theme="sports"] {
+    --theme-surface: #fafafa;
+    --theme-ink: #0d0d0d;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #0d0d0d;
+    --color-lightOrange: #ededed;
+    --color-darkBlue: #0d0d0d;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "Inter Variable", system-ui, sans-serif;
+    --font-dmserif: "Oswald Variable", system-ui, sans-serif;
+
+    --radius-md: 0.2rem;
+    --radius-lg: 0.25rem;
+    --radius-xl: 0.32rem;
+    --radius-2xl: 0.44rem;
+    --radius-3xl: 0.6rem;
+
+    --theme-heading-case: uppercase;
+    --theme-heading-tracking: 0.03em;
+}
+
+/* Jewelry & Gifts */
+[data-theme="jewelry"] {
+    --theme-surface: #fbfaf6;
+    --theme-ink: #151411;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #151411;
+    --color-lightOrange: #f1eee7;
+    --color-darkBlue: #151411;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "Jost Variable", system-ui, sans-serif;
+    --font-dmserif: "Playfair Display Variable", Georgia, serif;
+
+    --radius-md: 0;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-2xl: 0;
+    --radius-3xl: 0;
+
+    --theme-heading-case: none;
+    --theme-heading-tracking: 0.01em;
+}
+
+/* Books, Art & Stationery */
+[data-theme="books"] {
+    --theme-surface: #fbf6e7;
+    --theme-ink: #162137;
+
+    --color-white: var(--theme-surface);
+    --color-black: var(--theme-ink);
+    --color-navyBlue: #173560;
+    --color-lightOrange: #f2ebd9;
+    --color-darkBlue: #ae4024;
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+
+    --font-poppins: "Source Sans 3 Variable", system-ui, sans-serif;
+    --font-dmserif: "Source Serif 4 Variable", Georgia, serif;
+
+    --radius-md: 0.25rem;
+    --radius-lg: 0.312rem;
+    --radius-xl: 0.4rem;
+    --radius-2xl: 0.55rem;
+    --radius-3xl: 0.75rem;
+
+    --theme-heading-case: none;
+    --theme-heading-tracking: 0;
+}

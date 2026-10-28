@@ -2,7 +2,7 @@
 
 use Webkul\Theme\Enums\SectionTypeEnum;
 
-return [
+$themes = [
 
     /*
     |--------------------------------------------------------------------------
@@ -222,3 +222,38 @@ return [
         ],
     ],
 ];
+
+/*
+|--------------------------------------------------------------------------
+| Store Themes
+|--------------------------------------------------------------------------
+|
+| Each store theme shares the default theme's views and build. It differs in its colours and fonts (the
+| `data-theme` block in packages/Webkul/Shop/src/Resources/assets/css/themes.css) and in the shape of the
+| storefront: `layout` picks a header, product card, listing grid and footer variant, which the root element
+| carries as data-header, data-card, data-grid and data-footer and layouts.css styles. Their gallery entries
+| are in Webkul/Theme/src/Resources/catalog.php.
+|
+| header: classic | centered | compact       card: soft | editorial | boxed
+| grid:   airy | dense                       footer: rich | minimal
+|
+*/
+
+foreach ([
+    'apparel' => ['Fashion & Apparel', 'centered', 'editorial', 'airy', 'minimal'],
+    'electronics' => ['Electronics & Tech', 'compact', 'boxed', 'dense', 'rich'],
+    'food' => ['Food, Grocery & Cafe', 'classic', 'soft', 'airy', 'rich'],
+    'home' => ['Home & Furniture', 'classic', 'boxed', 'airy', 'minimal'],
+    'beauty' => ['Beauty & Wellness', 'centered', 'editorial', 'airy', 'minimal'],
+    'kids' => ['Kids & Toys', 'classic', 'soft', 'dense', 'rich'],
+    'sports' => ['Sports & Outdoors', 'compact', 'boxed', 'dense', 'rich'],
+    'jewelry' => ['Jewelry & Gifts', 'centered', 'editorial', 'airy', 'minimal'],
+    'books' => ['Books, Art & Stationery', 'classic', 'editorial', 'dense', 'minimal'],
+] as $code => [$name, $header, $card, $grid, $footer]) {
+    $themes['shop'][$code] = [
+        'name' => $name,
+        'layout' => compact('header', 'card', 'grid', 'footer'),
+    ] + $themes['shop']['default'];
+}
+
+return $themes;

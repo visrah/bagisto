@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Event;
 use Webkul\Installer\Console\Commands\Provision;
 use Webkul\Installer\Helpers\DatabaseManager;
 use Webkul\Installer\Helpers\ShopDefaults;
+use Webkul\ShopSetup\Support\ConfigValues;
 
 /**
  * Run the command's atomic step against a stand-in database manager whose seeding writes one marker row.
@@ -31,9 +32,17 @@ function provisionWith(bool $seeds, bool $createsAdmin): bool
     return $method->invoke(app(Provision::class), $manager, [], ['name' => 'Admin', 'email' => 'a@example.com', 'password' => 'secret-pass']);
 }
 
-function configValue(string $code): ?string
+/**
+ * The value the application itself reads for a setting, which is what a row in the table only promises.
+ */
+function configValue(string $code): mixed
 {
-    return DB::table('core_config')->where('code', $code)->whereNull('channel_code')->value('value');
+    return core()->getConfigData($code);
+}
+
+function markerExists(): bool
+{
+    return DB::table('core_config')->where('code', 'test.provision.marker')->exists();
 }
 
 // ============================================================================
@@ -42,17 +51,17 @@ function configValue(string $code): ?string
 
 it('should commit what the seeders wrote when provisioning succeeds', function () {
     expect(provisionWith(true, true))->toBeTrue()
-        ->and(configValue('test.provision.marker'))->toBe('1');
+        ->and(markerExists())->toBeTrue();
 });
 
 it('should roll back what the seeders wrote when a seeder reports failure', function () {
     expect(provisionWith(false, true))->toBeFalse()
-        ->and(configValue('test.provision.marker'))->toBeNull();
+        ->and(markerExists())->toBeFalse();
 });
 
 it('should roll back what the seeders wrote when the admin cannot be created', function () {
     expect(provisionWith(true, false))->toBeFalse()
-        ->and(configValue('test.provision.marker'))->toBeNull();
+        ->and(markerExists())->toBeFalse();
 });
 
 it('should write the shop defaults only when provisioning succeeded', function () {
@@ -60,7 +69,7 @@ it('should write the shop defaults only when provisioning succeeded', function (
 
     provisionWith(false, true);
 
-    expect(configValue('sales.payment_methods.stripe.active'))->toBeNull();
+    expect(configValue('sales.payment_methods.stripe.active'))->toBeTruthy();
 
     provisionWith(true, true);
 
@@ -80,8 +89,18 @@ it('should switch off every gateway that needs credentials and leave the offline
         expect(configValue("sales.payment_methods.{$method}.active"))->toBe('0');
     }
 
-    expect(configValue('sales.payment_methods.cashondelivery.active'))->toBeNull()
-        ->and(configValue('sales.payment_methods.moneytransfer.active'))->toBeNull();
+    expect(configValue('sales.payment_methods.cashondelivery.active'))->toBeTruthy()
+        ->and(configValue('sales.payment_methods.moneytransfer.active'))->toBeTruthy();
+});
+
+it('should write values for fields bound to a channel where the application reads them', function () {
+    app(ShopDefaults::class)->apply(['country' => 'MU']);
+
+    $row = DB::table('core_config')->where('code', 'sales.payment_methods.stripe.active')->first();
+
+    expect($row->channel_code)->toBe(core()->getDefaultChannelCode())
+        ->and(configValue('sales.payment_methods.stripe.active'))->toBe('0')
+        ->and(configValue('sales.shipping.origin.country'))->toBe('MU');
 });
 
 it('should take the origin country, store name and VAT number from the options', function () {
@@ -103,12 +122,22 @@ it('should ignore a country that is not a two letter code and options that are e
         ->and(configValue('sales.shipping.origin.vat_number'))->toBeNull();
 });
 
-it('should not duplicate a value when it is applied twice', function () {
+it('should keep a value that is already set instead of overwriting it', function () {
     app(ShopDefaults::class)->apply(['country' => 'MU']);
     app(ShopDefaults::class)->apply(['country' => 'GB']);
 
     expect(DB::table('core_config')->where('code', 'sales.shipping.origin.country')->count())->toBe(1)
-        ->and(configValue('sales.shipping.origin.country'))->toBe('GB');
+        ->and(configValue('sales.shipping.origin.country'))->toBe('MU');
+});
+
+it('should not switch a gateway back off once the owner has switched it on', function () {
+    app(ShopDefaults::class)->apply();
+
+    app(ConfigValues::class)->set('sales.payment_methods.stripe.active', '1');
+
+    app(ShopDefaults::class)->apply();
+
+    expect(configValue('sales.payment_methods.stripe.active'))->toBe('1');
 });
 
 // ============================================================================

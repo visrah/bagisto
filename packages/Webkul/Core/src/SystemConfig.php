@@ -72,6 +72,10 @@ class SystemConfig
         $configs = Arr::undot(Arr::dot($configWithDotNotation));
 
         foreach ($configs as $configItem) {
+            if ($this->isHidden($configItem['key'])) {
+                continue;
+            }
+
             $subConfigItems = $this->processSubConfigItems($configItem);
 
             $this->addItem(new Item(
@@ -96,7 +100,7 @@ class SystemConfig
     {
         return collect($configItem)
             ->sortBy('sort')
-            ->filter(fn ($value) => is_array($value) && isset($value['name']))
+            ->filter(fn ($value) => is_array($value) && isset($value['name']) && ! $this->isHidden($value['key'] ?? ''))
             ->map(function ($subConfigItem) {
                 $configItemChildren = $this->processSubConfigItems($subConfigItem);
 
@@ -113,6 +117,22 @@ class SystemConfig
                     layout: $subConfigItem['layout'] ?? null,
                 );
             });
+    }
+
+    /**
+     * Whether a configuration section is hidden from the screen and the search: the key itself, or anything beneath it.
+     *
+     * Only the screen is affected. The field definitions stay, because features read their defaults from them.
+     */
+    public function isHidden(string $key): bool
+    {
+        foreach (config('system_config_hidden', []) as $hidden) {
+            if ($key === $hidden || str_starts_with($key, $hidden.'.')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
