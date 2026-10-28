@@ -14,7 +14,8 @@ class Provision extends Command
      * @var string
      */
     protected $signature = 'bagisto:provision
-        { --demo-samples : Also seed sample products, as BAGISTO_DEMO_SAMPLES=true does. }';
+        { --demo-samples : Also seed sample products, as BAGISTO_DEMO_SAMPLES=true does. }
+        { --migrate : Run the migrations first, holding a database lock so replicas booting together do not race. }';
 
     /**
      * The console command description.
@@ -27,6 +28,30 @@ class Provision extends Command
      * Make the shop ready to use without the web installer, which needs a writable `.env` and `storage/`.
      */
     public function handle(DatabaseManager $databaseManager): int
+    {
+        if (! $this->option('migrate')) {
+            return $this->provision($databaseManager);
+        }
+
+        // Two replicas migrating one database corrupt it: MySQL DDL auto-commits, so a half-run migration is not rolled back.
+        $lockName = 'bagisto_provision_'.DB::getDatabaseName();
+
+        if ((int) DB::selectOne('SELECT GET_LOCK(?, 120) AS locked', [$lockName])->locked !== 1) {
+            $this->components->error('Could not acquire the provision lock within 120s.');
+
+            return self::FAILURE;
+        }
+
+        try {
+            $this->call('migrate', ['--force' => true]);
+
+            return $this->provision($databaseManager);
+        } finally {
+            DB::selectOne('SELECT RELEASE_LOCK(?)', [$lockName]);
+        }
+    }
+
+    protected function provision(DatabaseManager $databaseManager): int
     {
         if ($databaseManager->isInstalled()) {
             $this->components->info('Bagisto is already provisioned.');
