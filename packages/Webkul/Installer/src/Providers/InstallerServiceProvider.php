@@ -3,14 +3,12 @@
 namespace Webkul\Installer\Providers;
 
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Installer\Console\Commands\Installer as InstallerCommand;
 use Webkul\Installer\Console\Commands\Provision;
 use Webkul\Installer\Http\Middleware\CanInstall;
 use Webkul\Installer\Http\Middleware\Locale;
 use Webkul\Installer\Http\Middleware\UseFileSession;
-use Webkul\Installer\Listeners\Installer;
 
 class InstallerServiceProvider extends ServiceProvider
 {
@@ -42,8 +40,6 @@ class InstallerServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'installer');
 
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'installer');
-
-        Event::listen('bagisto.installed', [Installer::class, 'installed']);
     }
 
     /**
