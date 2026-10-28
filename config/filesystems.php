@@ -61,7 +61,8 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
+            // Without a public bucket hostname, media is served by the app itself (see routes/web.php) over its own HTTPS domain.
+            'url' => env('AWS_URL') ?: rtrim((string) env('APP_URL'), '/').'/s3',
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
