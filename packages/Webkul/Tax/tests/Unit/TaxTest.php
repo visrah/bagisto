@@ -102,6 +102,31 @@ it('should take the highest rate when several rates apply', function () {
     expect(applicableRate($taxCategory, ['country' => 'US', 'state' => 'CA', 'postcode' => '90001']))->tax_rate->toEqual(12);
 });
 
+it('should apply a rate for every other country when no rate names the address country', function () {
+    $taxCategory = taxCategoryWithRates([['country' => 'MU', 'tax_rate' => 15], ['country' => '*', 'tax_rate' => 5]]);
+
+    expect(applicableRate($taxCategory, ['country' => 'MU', 'state' => '', 'postcode' => '11101']))->tax_rate->toEqual(15)
+        ->and(applicableRate($taxCategory, ['country' => 'FR', 'state' => '', 'postcode' => '75001']))->tax_rate->toEqual(5);
+});
+
+it('should prefer the rate of the address country over the rest-of-world rate even when it is lower', function () {
+    $taxCategory = taxCategoryWithRates([['country' => 'MU', 'tax_rate' => 2], ['country' => '*', 'tax_rate' => 20]]);
+
+    expect(applicableRate($taxCategory, ['country' => 'MU', 'state' => '', 'postcode' => '11101']))->tax_rate->toEqual(2);
+});
+
+it('should fall back to the rest-of-world rate when the country has only rates for other states', function () {
+    $taxCategory = taxCategoryWithRates([['country' => 'US', 'state' => 'CA', 'tax_rate' => 7], ['country' => '*', 'tax_rate' => 3]]);
+
+    expect(applicableRate($taxCategory, ['country' => 'US', 'state' => 'NY', 'postcode' => '10001']))->tax_rate->toEqual(3);
+});
+
+it('should apply nothing to an address without a country even when a rest-of-world rate exists', function () {
+    $taxCategory = taxCategoryWithRates([['country' => '*', 'tax_rate' => 5]]);
+
+    expect(applicableRate($taxCategory, ['country' => null, 'state' => '', 'postcode' => '']))->toBeNull();
+});
+
 // ============================================================================
 // Totals
 // ============================================================================

@@ -2,7 +2,7 @@
 
 namespace Webkul\Installer\Helpers;
 
-use Illuminate\Support\Facades\DB;
+use Webkul\ShopSetup\Support\ConfigValues;
 
 class ShopDefaults
 {
@@ -22,7 +22,14 @@ class ShopDefaults
     ];
 
     /**
+     * Create a new shop defaults writer.
+     */
+    public function __construct(protected ConfigValues $config) {}
+
+    /**
      * Write the first-run configuration: only the offline payment methods are active, and the shop's origin comes from the options.
+     *
+     * A value that is already stored is left alone, so applying this on every start never undoes what the owner set.
      *
      * @param  array{country?: ?string, store_name?: ?string, vat_number?: ?string}  $options
      */
@@ -50,33 +57,7 @@ class ShopDefaults
         }
 
         foreach ($values as $code => $value) {
-            $this->set($code, $value);
+            $this->config->default($code, $value);
         }
-    }
-
-    /**
-     * Store one configuration value for every channel and locale, replacing an existing one.
-     */
-    protected function set(string $code, string $value): void
-    {
-        $row = DB::table('core_config')
-            ->where('code', $code)
-            ->whereNull('channel_code')
-            ->whereNull('locale_code');
-
-        if ($row->exists()) {
-            $row->update(['value' => $value, 'updated_at' => now()]);
-
-            return;
-        }
-
-        DB::table('core_config')->insert([
-            'code' => $code,
-            'value' => $value,
-            'channel_code' => null,
-            'locale_code' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
     }
 }

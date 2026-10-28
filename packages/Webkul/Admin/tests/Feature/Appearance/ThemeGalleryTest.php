@@ -41,24 +41,17 @@ it('should mark the theme a channel runs as active', function () {
     expect(collect($theme['active_on'])->pluck('id'))->toContain($channel->id);
 });
 
-it('should list catalog themes that are not installed as available', function () {
-    $theme = app(ThemeCatalog::class)->find('fashion');
+it('should list only themes that ship with the store, so none is left to buy', function () {
+    $themes = app(ThemeCatalog::class)->all();
 
-    expect($theme)->not->toBeNull();
+    expect($themes)->not->toBeEmpty();
 
-    expect($theme['status'])->toBe(ThemeCatalog::STATUS_AVAILABLE);
-
-    expect($theme['is_installed'])->toBeFalse();
-
-    expect($theme['url'])->not->toBeNull();
-});
-
-it('should sort active themes ahead of purchasable ones', function () {
-    $statuses = app(ThemeCatalog::class)->all()->pluck('status')->unique()->values()->toArray();
-
-    expect($statuses[0])->toBeIn([ThemeCatalog::STATUS_ACTIVE, ThemeCatalog::STATUS_INSTALLED]);
-
-    expect(end($statuses))->toBe(ThemeCatalog::STATUS_AVAILABLE);
+    foreach ($themes as $theme) {
+        expect($theme['is_installed'])->toBeTrue()
+            ->and($theme['status'])->not->toBe(ThemeCatalog::STATUS_AVAILABLE)
+            ->and($theme['url'])->toBeNull()
+            ->and($theme['tags'])->not->toContain('premium');
+    }
 });
 
 // ============================================================================
@@ -75,7 +68,7 @@ it('should report how many customizations a theme switch would leave behind', fu
 
     $this->loginAsAdmin();
 
-    getJson(route('admin.appearance.themes.impact', 'fashion').'?channel_ids[]='.$channel->id)
+    getJson(route('admin.appearance.themes.impact', 'apparel').'?channel_ids[]='.$channel->id)
         ->assertOk()
         ->assertJsonPath('impact.0.channel_id', $channel->id)
         ->assertJsonPath('impact.0.current_theme', config('themes.shop.default.name'))
@@ -133,7 +126,7 @@ it('should refuse to activate a theme that is not installed', function () {
 
     $this->loginAsAdmin();
 
-    postJson(route('admin.appearance.themes.activate', 'fashion'), [
+    postJson(route('admin.appearance.themes.activate', 'not-installed'), [
         'channel_ids' => [$channel->id],
     ])->assertNotFound();
 
@@ -195,35 +188,9 @@ it('should leave a channel already on the theme out of the impact report', funct
 // Catalog Details
 // ============================================================================
 
-it('should not offer a buy button for a theme with no store page', function () {
-    $theme = app(ThemeCatalog::class)->find('elvix');
-
-    expect($theme['url'])->toBeNull();
-
-    expect($theme['demo_url'])->not->toBeNull();
-});
-
 it('should not carry a price, which the store page is the source of', function () {
     foreach (app(ThemeCatalog::class)->all() as $theme) {
         expect($theme)->not->toHaveKeys(['price', 'currency', 'is_paid']);
-    }
-});
-
-it('should carry the catalog details onto every marketplace theme', function () {
-    $marketplace = app(ThemeCatalog::class)
-        ->all()
-        ->reject(fn ($theme) => $theme['is_installed']);
-
-    expect($marketplace)->not->toBeEmpty();
-
-    foreach ($marketplace as $theme) {
-        expect($theme['name'])->not->toBeEmpty();
-
-        expect($theme['description'])->not->toBeEmpty();
-
-        expect($theme['screenshot'])->toStartWith('https://');
-
-        expect($theme['demo_url'])->toStartWith('https://');
     }
 });
 
@@ -239,13 +206,13 @@ it('should serve the bundled screenshot of an installed theme from the admin bui
 // Theme Codes
 // ============================================================================
 
-it('should offer each marketplace theme under the code its package registers', function () {
+it('should offer the default theme and the nine store themes, and no marketplace theme', function () {
     $codes = app(ThemeCatalog::class)->all()->pluck('code');
 
-    expect($codes)->toContain('fashion', 'breeze', 'commercia', 'adornments', 'perfume', 'electronic', 'waggin');
+    expect($codes)->toContain('default', 'apparel', 'electronics', 'food', 'home', 'beauty', 'kids', 'sports', 'jewelry', 'books');
 
-    foreach (['ethereal-fashion', 'vape-commerce', 'quick-commerce', 'jewellery-commerce', 'velora-perfume'] as $retired) {
-        expect($codes)->not->toContain($retired);
+    foreach (['fashion', 'breeze', 'commercia', 'adornments', 'perfume', 'electronic', 'elvix', 'autrivo', 'waggin'] as $paid) {
+        expect($codes)->not->toContain($paid);
     }
 });
 
@@ -288,7 +255,7 @@ it('should name the channel current theme in the impact report by its catalog na
 
     $this->loginAsAdmin();
 
-    getJson(route('admin.appearance.themes.impact', 'fashion').'?channel_ids[]='.$channel->id)
+    getJson(route('admin.appearance.themes.impact', 'apparel').'?channel_ids[]='.$channel->id)
         ->assertOk()
         ->assertJsonPath('impact.0.current_theme', app(ThemeCatalog::class)->find('default')['name']);
 });

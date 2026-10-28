@@ -1,0 +1,176 @@
+/**
+ * Layout variants of the store themes.
+ *
+ * config/themes.php gives every theme a `layout`, which the layout view prints on the root element as
+ * data-header, data-card, data-grid and data-footer. The markup carries data-slot hooks on the few parts
+ * that change shape, and the rules below restyle them. The first value of each (classic, soft, airy, rich)
+ * is the markup as it ships, so it has no rule. This file is unlayered on purpose: it must beat the
+ * layered Tailwind utilities on the same elements without `!important`.
+ */
+
+/* Header: classic | centered | compact */
+
+@media (min-width: 1024px) {
+    [data-header="centered"] [data-slot="header-bar"] {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-areas: "search logo links" "nav nav nav";
+        align-items: center;
+        padding-top: 1rem;
+    }
+
+    [data-header="centered"] :is([data-slot="header-nav"], [data-slot="header-tools"]) {
+        display: contents;
+    }
+
+    [data-header="centered"] [data-slot="logo"] {
+        grid-area: logo;
+        justify-self: center;
+    }
+
+    /* The camera button sits at the container's edge, so the container is as wide as the form it holds. */
+    [data-header="centered"] [data-slot="search"] {
+        grid-area: search;
+        max-width: 27.8125rem;
+    }
+
+    [data-header="centered"] [data-slot="header-links"] {
+        grid-area: links;
+        justify-self: end;
+    }
+
+    [data-header="centered"] [data-slot="header-nav"] > :not([data-slot="logo"]) {
+        grid-area: nav;
+        justify-self: stretch;
+        justify-content: center;
+        margin-top: 0.75rem;
+        border-top: 1px solid var(--color-header-line);
+    }
+
+    [data-header="compact"] [data-slot="header-bar"] {
+        min-height: 3.5rem;
+        border-bottom: 2px solid var(--color-black);
+    }
+
+    [data-header="compact"] [class~="h-19.25"] {
+        height: 3.5rem;
+    }
+
+    [data-header="compact"] [class~="top-19.5"] {
+        top: 3.5rem;
+    }
+
+    [data-header="compact"] [data-slot="header-nav"] a:not([data-slot="logo"]) {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+    }
+}
+
+/* A dark header keeps any logo readable on a light chip, whatever colours the owner's logo uses */
+
+[data-theme="electronics"] [data-slot="logo"] {
+    padding: 0.25rem 0.625rem;
+    background: #fff;
+    border-radius: var(--radius-md);
+}
+
+/* Product card: soft | editorial | boxed */
+
+[data-card="editorial"] [data-slot="card"] {
+    border-radius: 0;
+}
+
+[data-card="editorial"] [data-slot="card"]:hover {
+    box-shadow: none;
+}
+
+[data-card="editorial"] [data-slot="card-media"] {
+    max-height: none;
+    max-width: none;
+    border-radius: 0;
+}
+
+[data-card="boxed"] [data-slot="card-media"] {
+    max-height: none;
+    max-width: none;
+    border-radius: 0;
+}
+
+:is([data-card="editorial"], [data-card="boxed"]) [data-slot="card-media"] img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--card-aspect, 3 / 4);
+    object-fit: var(--card-fit, cover);
+}
+
+[data-card="editorial"] [data-slot="card-info"] {
+    max-width: none;
+    padding-inline: 0;
+}
+
+[data-card="editorial"] [data-slot="card-info"] p:first-child {
+    font-family: var(--font-dmserif, inherit);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+[data-card="boxed"] [data-slot="card"] {
+    border: 1px solid var(--color-zinc-200);
+    border-radius: var(--radius-md);
+}
+
+[data-card="boxed"] [data-slot="card"]:hover {
+    border-color: var(--color-zinc-400);
+    box-shadow: none;
+}
+
+[data-card="boxed"] [data-slot="card-media"] img {
+    padding: 0.5rem;
+    background: var(--color-white);
+}
+
+[data-card="boxed"] [data-slot="card-info"] {
+    max-width: none;
+    padding-inline: 0.75rem;
+    border-top: 1px solid var(--color-zinc-200);
+}
+
+/* Listing grid: airy | dense */
+
+[data-grid="dense"] [data-slot="product-grid"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (max-width: 1060px) {
+    [data-grid="dense"] [data-slot="product-grid"] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Footer: rich | minimal */
+
+[data-footer="minimal"] [data-slot="footer"] {
+    background: transparent;
+    border-top: 1px solid var(--color-footer-line);
+}
+
+[data-footer="minimal"] [data-slot="footer"] > div:first-child {
+    padding-block: 2.25rem;
+}
+
+/* How a theme sets up its images */
+
+[data-theme="books"] {
+    --card-aspect: 2 / 3;
+}
+
+[data-theme="jewelry"] {
+    --card-aspect: 4 / 5;
+}
+
+:is([data-theme="electronics"], [data-theme="home"], [data-theme="sports"]) {
+    --card-aspect: 1 / 1;
+    --card-fit: contain;
+}

@@ -110,6 +110,11 @@
             <directory suffix="Test.php">packages/Webkul/Sales/tests/Unit</directory>
         </testsuite>
 
+        <!-- ShopSetup package testsuites. -->
+        <testsuite name="ShopSetup Feature Test">
+            <directory suffix="Test.php">packages/Webkul/ShopSetup/tests/Feature</directory>
+        </testsuite>
+
         <!-- Shipping package testsuites. -->
         <testsuite name="Shipping Unit Test">
             <directory suffix="Test.php">packages/Webkul/Shipping/tests/Unit</directory>
@@ -159,5 +164,6 @@
         <env name="RESPONSE_CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="SHOP_ADMIN_MODE" value="full"/>
     </php>
 </phpunit>

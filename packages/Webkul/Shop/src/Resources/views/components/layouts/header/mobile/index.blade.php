@@ -22,6 +22,7 @@
             {!! view_render_event('bagisto.shop.components.layouts.header.mobile.logo.before') !!}
 
             <a
+                data-slot="logo"
                 href="{{ route('shop.home.index') }}"
                 class="flex max-h-7.5 items-center"
                 aria-label="@lang('shop::app.components.layouts.header.mobile.bagisto')"

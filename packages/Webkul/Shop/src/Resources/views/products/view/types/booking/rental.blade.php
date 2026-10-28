@@ -39,7 +39,7 @@
                         </label>
 
                         <label
-                            class="cursor-pointer text-[#6E6E6E]"
+                            class="cursor-pointer text-zinc-500"
                             for="booking[daily]"
                         >
                             @lang('shop::app.products.view.type.booking.rental.daily-basis')
@@ -64,7 +64,7 @@
                         </label>
 
                         <label
-                            class="cursor-pointer text-[#6E6E6E]"
+                            class="cursor-pointer text-zinc-500"
                             for="booking[hourly]"
                         >
                             @lang('shop::app.products.view.type.booking.rental.hourly-basis')
