@@ -21,7 +21,7 @@ class Provision extends Command
      *
      * @var string
      */
-    protected $description = 'Seed a migrated database and create the admin from BAGISTO_ADMIN_EMAIL and BAGISTO_ADMIN_PASSWORD. Does nothing once an admin exists, so it is safe to run on every release.';
+    protected $description = 'Seed a migrated database and create the admin from BAGISTO_ADMIN_PASSWORD and BAGISTO_ADMIN_EMAIL (default admin@example.com). Does nothing once an admin exists, so it is safe to run on every release.';
 
     /**
      * Make the shop ready to use without the web installer, which needs a writable `.env` and `storage/`.
@@ -34,11 +34,11 @@ class Provision extends Command
             return self::SUCCESS;
         }
 
-        $email = (string) env('BAGISTO_ADMIN_EMAIL');
+        $email = (string) env('BAGISTO_ADMIN_EMAIL', 'admin@example.com') ?: 'admin@example.com';
         $password = (string) env('BAGISTO_ADMIN_PASSWORD');
 
         if (! filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 8) {
-            $this->components->error('Set BAGISTO_ADMIN_EMAIL and a BAGISTO_ADMIN_PASSWORD of at least 8 characters.');
+            $this->components->error('Set a BAGISTO_ADMIN_PASSWORD of at least 8 characters (and a valid BAGISTO_ADMIN_EMAIL if you set one).');
 
             return self::FAILURE;
         }
