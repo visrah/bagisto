@@ -209,7 +209,7 @@
     --color-navyBlue: #1a1511;
     --color-lightOrange: #f4f0e9;
     --color-darkBlue: #1a1511;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "Inter Variable", system-ui, sans-serif;
     --font-dmserif: "Fraunces Variable", Georgia, serif;
@@ -234,7 +234,7 @@
     --color-navyBlue: #29c9fa;
     --color-lightOrange: #1b2531;
     --color-darkBlue: #29c9fa;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "Inter Variable", system-ui, sans-serif;
     --font-dmserif: "Space Grotesk Variable", system-ui, sans-serif;
@@ -259,7 +259,7 @@
     --color-navyBlue: #007834;
     --color-lightOrange: #f0f1d3;
     --color-darkBlue: #007834;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "Nunito Variable", system-ui, sans-serif;
     --font-dmserif: "Nunito Variable", system-ui, sans-serif;
@@ -284,7 +284,7 @@
     --color-navyBlue: #7f4730;
     --color-lightOrange: #f4ecde;
     --color-darkBlue: #7f4730;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "DM Sans Variable", system-ui, sans-serif;
     --font-dmserif: "DM Serif Display", Georgia, serif;
@@ -309,7 +309,7 @@
     --color-navyBlue: #854a4f;
     --color-lightOrange: #feebeb;
     --color-darkBlue: #854a4f;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "Jost Variable", system-ui, sans-serif;
     --font-dmserif: "Cormorant Garamond Variable", Georgia, serif;
@@ -334,7 +334,7 @@
     --color-navyBlue: #3f62f3;
     --color-lightOrange: #ffddff;
     --color-darkBlue: #3f62f3;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "Nunito Variable", system-ui, sans-serif;
     --font-dmserif: "Fredoka Variable", system-ui, sans-serif;
@@ -359,7 +359,7 @@
     --color-navyBlue: #0d0d0d;
     --color-lightOrange: #ededed;
     --color-darkBlue: #0d0d0d;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "Inter Variable", system-ui, sans-serif;
     --font-dmserif: "Oswald Variable", system-ui, sans-serif;
@@ -384,7 +384,7 @@
     --color-navyBlue: #151411;
     --color-lightOrange: #f1eee7;
     --color-darkBlue: #151411;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "Jost Variable", system-ui, sans-serif;
     --font-dmserif: "Playfair Display Variable", Georgia, serif;
@@ -409,7 +409,7 @@
     --color-navyBlue: #173560;
     --color-lightOrange: #f2ebd9;
     --color-darkBlue: #ae4024;
-    --color-offer: color-mix(in oklab, var(--color-navyBlue) 10%, var(--theme-surface));
+    --color-offer: color-mix(in oklab, var(--color-navyBlue) 16%, var(--theme-surface));
 
     --font-poppins: "Source Sans 3 Variable", system-ui, sans-serif;
     --font-dmserif: "Source Serif 4 Variable", Georgia, serif;
