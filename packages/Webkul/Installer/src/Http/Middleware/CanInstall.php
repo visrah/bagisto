@@ -46,9 +46,10 @@ class CanInstall
         }
 
         if (app(DatabaseManager::class)->isInstalled()) {
-            touch(storage_path('installed'));
-
-            Event::dispatch('bagisto.installed');
+            // A read-only `storage/` cannot take the marker; the tracker then must not fire on every request.
+            if (@touch(storage_path('installed'))) {
+                Event::dispatch('bagisto.installed');
+            }
 
             return true;
         }
