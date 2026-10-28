@@ -40,7 +40,8 @@ return [
 
         'private' => [
             'driver' => 'local',
-            'root' => storage_path('app/private'),
+            // A deployment with a read-only image points this at a persistent volume.
+            'root' => env('BAGISTO_PRIVATE_ROOT', storage_path('app/private')),
             // 'serve' => true,
             'throw' => false,
             'report' => false,
