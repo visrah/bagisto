@@ -4,7 +4,9 @@ namespace Webkul\Installer\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 use Webkul\Installer\Helpers\DatabaseManager;
+use Webkul\Installer\Helpers\ShopDefaults;
 
 class Provision extends Command
 {
@@ -26,6 +28,8 @@ class Provision extends Command
 
     /**
      * Make the shop ready to use without the web installer, which needs a writable `.env` and `storage/`.
+     *
+     * Two replicas migrating one database corrupt it, because MySQL DDL auto-commits and a half-run migration is not rolled back, so the migration runs under a lock.
      */
     public function handle(DatabaseManager $databaseManager): int
     {
@@ -33,7 +37,6 @@ class Provision extends Command
             return $this->provision($databaseManager);
         }
 
-        // Two replicas migrating one database corrupt it: MySQL DDL auto-commits, so a half-run migration is not rolled back.
         $lockName = 'bagisto_provision_'.DB::getDatabaseName();
 
         if ((int) DB::selectOne('SELECT GET_LOCK(?, 120) AS locked', [$lockName])->locked !== 1) {
@@ -51,6 +54,11 @@ class Provision extends Command
         }
     }
 
+    /**
+     * Seed a migrated database and create the admin, doing nothing once an admin exists.
+     *
+     * A database that holds shop data but no admin is left alone, because seeding over it would collide on ids and needs a person to decide.
+     */
     protected function provision(DatabaseManager $databaseManager): int
     {
         if ($databaseManager->isInstalled()) {
@@ -68,7 +76,6 @@ class Provision extends Command
             return self::FAILURE;
         }
 
-        // Seeding over existing shop data would collide on ids; an admin-less database that holds data needs a person.
         if (DB::table('channels')->exists()) {
             $this->components->error('The database has shop data but no admin. Refusing to seed over it.');
 
@@ -78,20 +85,20 @@ class Provision extends Command
         $locale = (string) env('APP_LOCALE', 'en');
         $currency = (string) env('APP_CURRENCY', 'USD');
 
-        $seeded = $databaseManager->seed([
+        $provisioned = $this->provisionAtomically($databaseManager, [
             'default_locale' => $locale,
             'allowed_locales' => [$locale],
             'default_currency' => $currency,
             'allowed_currencies' => [$currency],
             'skip_admin_creation' => true,
-        ]);
-
-        if (! $seeded || ! $databaseManager->createAdminUser([
+        ], [
             'name' => (string) env('BAGISTO_ADMIN_NAME', 'Admin'),
             'email' => $email,
             'password' => $password,
-        ])) {
-            $this->components->error('Seeding failed; see the log.');
+        ]);
+
+        if (! $provisioned) {
+            $this->components->error('Seeding failed and was rolled back; see the log.');
 
             return self::FAILURE;
         }
@@ -108,5 +115,38 @@ class Provision extends Command
         $this->components->info("Bagisto provisioned. Admin: {$email}");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Seed, create the admin and write the shop defaults in one transaction, so a failure leaves no half-built shop behind.
+     *
+     * The seeders report their own failures and return false instead of throwing, so the outcome decides between commit and rollback.
+     *
+     * @param  array<string, mixed>  $seed
+     * @param  array{name: string, email: string, password: string}  $admin
+     */
+    protected function provisionAtomically(DatabaseManager $databaseManager, array $seed, array $admin): bool
+    {
+        DB::beginTransaction();
+
+        try {
+            $provisioned = $databaseManager->seed($seed) && $databaseManager->createAdminUser($admin);
+
+            if ($provisioned) {
+                app(ShopDefaults::class)->apply([
+                    'country' => env('SHOP_COUNTRY'),
+                    'store_name' => env('SHOP_STORE_NAME'),
+                    'vat_number' => env('SHOP_TAX_ID'),
+                ]);
+            }
+        } catch (Throwable $exception) {
+            report($exception);
+
+            $provisioned = false;
+        }
+
+        $provisioned ? DB::commit() : DB::rollBack();
+
+        return $provisioned;
     }
 }
