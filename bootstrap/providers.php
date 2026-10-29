@@ -1,6 +1,7 @@
 <?php
 
 use App\Providers\AppServiceProvider;
+use Webkul\AbsaSpark\Providers\AbsaSparkServiceProvider;
 use Webkul\Admin\Providers\AdminServiceProvider;
 use Webkul\Attribute\Providers\AttributeServiceProvider;
 use Webkul\BookingProduct\Providers\BookingProductServiceProvider;
@@ -57,6 +58,7 @@ return [
      */
     OmnibusServiceProvider::class,
     AdminServiceProvider::class,
+    AbsaSparkServiceProvider::class,
     AttributeServiceProvider::class,
     BookingProductServiceProvider::class,
     CMSServiceProvider::class,

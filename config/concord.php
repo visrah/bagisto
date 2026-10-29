@@ -25,6 +25,7 @@ return [
      */
     'modules' => [
         ModuleServiceProvider::class,
+        Webkul\AbsaSpark\Providers\ModuleServiceProvider::class,
         Webkul\Attribute\Providers\ModuleServiceProvider::class,
         Webkul\BookingProduct\Providers\ModuleServiceProvider::class,
         Webkul\CMS\Providers\ModuleServiceProvider::class,

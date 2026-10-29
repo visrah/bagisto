@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Storage;
 use Pest\Repositories\DatasetsRepository;
+use Webkul\AbsaSpark\Tests\AbsaSparkTestCase;
 use Webkul\Admin\Tests\AdminTestCase;
 use Webkul\Category\Tests\CategoryTestCase;
 use Webkul\Core\Tests\CoreTestCase;
@@ -52,6 +53,7 @@ uses(OmnibusTestCase::class)->in('../packages/Webkul/Omnibus/tests');
 uses(PayGlocalTestCase::class)->in('../packages/Webkul/PayGlocal/tests');
 uses(PaymentTestCase::class)->in('../packages/Webkul/Payment/tests');
 uses(PaypalTestCase::class)->in('../packages/Webkul/Paypal/tests');
+uses(AbsaSparkTestCase::class)->in('../packages/Webkul/AbsaSpark/tests');
 uses(PayUTestCase::class)->in('../packages/Webkul/PayU/tests');
 uses(ProductTestCase::class)->in('../packages/Webkul/Product/tests');
 uses(RazorpayTestCase::class)->in('../packages/Webkul/Razorpay/tests');
