@@ -12,6 +12,14 @@
         </testsuite>
 
         <!-- Admin package testsuites. -->
+        <testsuite name="AbsaSpark Unit Test">
+            <directory suffix="Test.php">packages/Webkul/AbsaSpark/tests/Unit</directory>
+        </testsuite>
+
+        <testsuite name="AbsaSpark Feature Test">
+            <directory suffix="Test.php">packages/Webkul/AbsaSpark/tests/Feature</directory>
+        </testsuite>
+
         <testsuite name="Admin Feature Test">
             <directory suffix="Test.php">packages/Webkul/Admin/tests/Feature</directory>
         </testsuite>
