@@ -40,10 +40,10 @@ class SetupChecklist
 
         $urls = [
             'tax' => route('admin.settings.shop_tax.index'),
-            'store' => route('admin.configuration.index', ['slug' => 'sales', 'slug2' => 'shipping']),
+            'store' => route('admin.settings.merchant.branding'),
             'shipping' => route('admin.configuration.index', ['slug' => 'sales', 'slug2' => 'carriers']),
             'email' => route('admin.configuration.index', ['slug' => 'emails', 'slug2' => 'configure']),
-            'product' => route('admin.catalog.products.index'),
+            'product' => route('admin.catalog.products.simple.create'),
         ];
 
         return array_map(fn (string $key) => [

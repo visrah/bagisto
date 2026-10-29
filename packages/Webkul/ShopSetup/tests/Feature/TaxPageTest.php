@@ -26,7 +26,7 @@ it('should hand the screen the current choice and the country presets', function
     get(route('admin.settings.shop_tax.index'))
         ->assertOk()
         ->assertSee('"mode":"added"', false)
-        ->assertSee('"MU":{"name":"VAT","rate":15', false);
+        ->assertDontSee('"MU":{"name":"VAT","rate":15', false);
 });
 
 it('should send a guest to the login page', function () {

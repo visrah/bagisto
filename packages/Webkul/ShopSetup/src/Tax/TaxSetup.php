@@ -206,7 +206,7 @@ class TaxSetup
     {
         $id = $this->config->get($setting);
 
-        return $id === null ? null : $this->taxRates->findOneByField('id', $id);
+        return filled($id) ? $this->taxRates->findOneByField('id', $id) : null;
     }
 
     /**
