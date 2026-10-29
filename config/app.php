@@ -89,7 +89,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'Asia/Kolkata'),
+    'timezone' => env('APP_TIMEZONE', 'Indian/Mauritius'),
 
     /*
     |--------------------------------------------------------------------------
@@ -132,7 +132,7 @@ return [
     |
     */
 
-    'currency' => env('APP_CURRENCY', 'USD'),
+    'currency' => env('APP_CURRENCY', 'MUR'),
 
     /*
     |--------------------------------------------------------------------------
