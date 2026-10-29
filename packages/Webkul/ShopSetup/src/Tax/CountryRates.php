@@ -11,7 +11,6 @@ class CountryRates
      * @var array<string, array{name: string, rate: float}>
      */
     protected const array PRESETS = [
-        'MU' => ['name' => 'VAT', 'rate' => 15.0],
         'GB' => ['name' => 'VAT', 'rate' => 20.0],
         'FR' => ['name' => 'VAT', 'rate' => 20.0],
         'DE' => ['name' => 'VAT', 'rate' => 19.0],
