@@ -86,7 +86,7 @@ class Provision extends Command
         }
 
         $locale = (string) env('APP_LOCALE', 'en');
-        $currency = (string) env('APP_CURRENCY', 'USD');
+        $currency = (string) config('app.currency');
 
         $provisioned = $this->provisionAtomically($databaseManager, [
             'default_locale' => $locale,
