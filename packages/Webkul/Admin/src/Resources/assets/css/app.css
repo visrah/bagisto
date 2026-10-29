@@ -8,6 +8,7 @@
  * The section types name their editor icons in the Theme package's classes, outside `src/`.
  */
 @source "../../../../../Theme/src/Sections";
+@source "../../../../../ShopSetup/src/Resources/views";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -196,7 +197,7 @@
 
     input::placeholder,
     textarea::placeholder {
-        @apply text-gray-400;
+        @apply text-gray-600;
     }
 }
 
@@ -250,7 +251,7 @@
     }
 
     .primary-button {
-        @apply bg-blue-600 border border-blue-700 cursor-pointer flex focus:opacity-[0.9] font-semibold gap-x-1 hover:opacity-[0.9] items-center place-content-center px-3 py-1.5 rounded-md text-gray-50 transition-all;
+        @apply bg-blue-600 border border-blue-700 cursor-pointer flex focus:opacity-[0.9] font-semibold gap-x-1 hover:opacity-[0.9] items-center place-content-center px-3 py-1.5 rounded-md text-white transition-all;
     }
 
     .secondary-button {
@@ -563,5 +564,24 @@ p {
          * Suppresses the generated label above — again, no utility for content.
          */
         content: none;
+    }
+}
+
+@layer base {
+    :focus-visible {
+        outline: 2px solid var(--color-blue-600);
+        outline-offset: 3px;
+    }
+
+    details > summary {
+        min-height: 44px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
     }
 }

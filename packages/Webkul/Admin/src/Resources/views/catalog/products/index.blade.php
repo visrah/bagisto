@@ -1,10 +1,8 @@
 @php
     $types = collect(config('product_types'))->map(fn ($type) => app($type['class']));
 
-    // A composite keeps its stock on its children, so it has no count of its own to show.
     $stockOnChildrenTypes = $types->filter->isComposite()->keys()->all();
 
-    // A type that keeps stock at all is left to the per-record `manage_stock` instead.
     $stockDisabledTypes = $types
         ->reject->isComposite()
         ->reject->isInventoryManageable()
@@ -28,12 +26,21 @@
         </p>
 
         <div class="flex items-center gap-x-2.5">
-            <!-- Export Modal -->
             <x-admin::datagrid.export :src="route('admin.catalog.products.index')" />
 
             {!! view_render_event('bagisto.admin.catalog.products.create.before') !!}
 
+            @if (bouncer()->hasPermission('catalog.products.create') && config('shop_setup.admin_mode') !== 'full')
+                <a href="{{ route('admin.catalog.products.simple.create') }}" class="primary-button">
+                    @lang('shop_setup::merchant.add-product')
+                </a>
+            @endif
+
             @if (bouncer()->hasPermission('catalog.products.create'))
+                @if (config('shop_setup.admin_mode') !== 'full')
+                    <details>
+                        <summary class="cursor-pointer py-2 text-sm font-medium">@lang('shop_setup::merchant.advanced-editor')</summary>
+                @endif
                 <v-create-product-form>
                     <button
                         type="button"
@@ -42,6 +49,9 @@
                         @lang('admin::app.catalog.products.index.create-btn')
                     </button>
                 </v-create-product-form>
+                @if (config('shop_setup.admin_mode') !== 'full')
+                    </details>
+                @endif
             @endif
 
             {!! view_render_event('bagisto.admin.catalog.products.create.after') !!}
@@ -50,12 +60,10 @@
 
     {!! view_render_event('bagisto.admin.catalog.products.list.before') !!}
 
-    <!-- Datagrid -->
     <x-admin::datagrid
         :src="route('admin.catalog.products.index')"
         :isMultiRow="true"
     >
-        <!-- Datagrid Header -->
         @php
             $hasPermission = bouncer()->hasPermission('catalog.products.edit') || bouncer()->hasPermission('catalog.products.delete');
         @endphp
@@ -163,9 +171,7 @@
                     class="row border-b px-2 py-2.5 transition-all hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-950 sm:px-4 md:grid md:grid-cols-[2fr_1fr_1fr] md:grid-rows-1 md:gap-1.5"
                     v-for="record in available.records"
                 >
-                    <!-- Mobile Layout -->
                     <div class="block space-y-3 md:hidden">
-                        <!-- Header Row with Checkbox, Name and Actions -->
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-start gap-2.5">
                                 @if ($hasPermission)
@@ -220,17 +226,21 @@
                                         @{{ "@lang('admin::app.catalog.products.index.datagrid.sku-value')".replace(':sku', record.sku) }}
                                     </p>
 
-                                    <p class="text-xs text-gray-600 dark:text-gray-300 sm:text-sm">
+                                    @if (config('shop_setup.admin_mode') === 'full')
+<p class="text-xs text-gray-600 dark:text-gray-300 sm:text-sm">
                                         @{{ "@lang('admin::app.catalog.products.index.datagrid.attribute-family-value')".replace(':attribute_family', record.attribute_family) }}
                                     </p>
+@endif
 
                                     <p class="text-xs text-gray-600 dark:text-gray-300 sm:text-sm">
                                         @{{ record.category_name ?? 'N/A' }}
                                     </p>
 
-                                    <p class="text-xs text-gray-600 dark:text-gray-300 sm:text-sm">
+                                    @if (config('shop_setup.admin_mode') === 'full')
+<p class="text-xs text-gray-600 dark:text-gray-300 sm:text-sm">
                                         @{{ record.type }}
                                     </p>
+@endif
 
                                     <p class="text-sm font-semibold text-gray-800 dark:text-white sm:text-base">
                                         @{{ $admin.formatPrice(record.price) }}
@@ -291,9 +301,7 @@
                         </div>
                     </div>
 
-                    <!-- Desktop Layout (Hidden on Mobile) -->
                     <div class="hidden md:contents">
-                        <!-- Name, SKU, Attribute Family Columns -->
                         <div class="flex gap-2.5">
                             @if ($hasPermission)
                                 <input
@@ -320,13 +328,14 @@
                                     @{{ "@lang('admin::app.catalog.products.index.datagrid.sku-value')".replace(':sku', record.sku) }}
                                 </p>
 
-                                <p class="text-gray-600 dark:text-gray-300">
+                                @if (config('shop_setup.admin_mode') === 'full')
+<p class="text-gray-600 dark:text-gray-300">
                                     @{{ "@lang('admin::app.catalog.products.index.datagrid.attribute-family-value')".replace(':attribute_family', record.attribute_family) }}
                                 </p>
+@endif
                             </div>
                         </div>
 
-                        <!-- Image, Price, Id, Stock Columns -->
                         <div class="flex gap-1.5">
                             <div class="relative">
                                 <template v-if="record.base_image">
@@ -356,7 +365,6 @@
                                     @{{ $admin.formatPrice(record.price) }}
                                 </p>
 
-                                <!-- Parent Product Quantity -->
                                 <div v-if="{!! $asJsArray($stockOnChildrenTypes) !!}.includes(record.type)">
                                     <p class="text-gray-600 dark:text-gray-300">
                                         <span class="text-red-600">N/A</span>
@@ -397,7 +405,6 @@
                             </div>
                         </div>
 
-                        <!-- Status, Category, Type Columns -->
                         <div class="flex items-center justify-between gap-x-4">
                             <div class="flex flex-col gap-1.5">
                                 <p :class="[record.status ? 'label-active': 'label-info']">
@@ -408,9 +415,11 @@
                                     @{{ record.category_name ?? 'N/A' }}
                                 </p>
 
-                                <p class="text-gray-600 dark:text-gray-300">
+                                @if (config('shop_setup.admin_mode') === 'full')
+<p class="text-gray-600 dark:text-gray-300">
                                     @{{ record.type }}
                                 </p>
+@endif
                             </div>
 
                             <p
@@ -441,7 +450,6 @@
             id="v-create-product-form-template"
         >
             <div>
-                <!-- Product Create Button -->
                 @if (bouncer()->hasPermission('catalog.products.create'))
                     <button
                         type="button"
@@ -457,9 +465,7 @@
                     as="div"
                 >
                     <form @submit="handleSubmit($event, create)">
-                        <!-- Customer Create Modal -->
                         <x-admin::modal ref="productCreateModal">
-                            <!-- Modal Header -->
                             <x-slot:header>
                                 <p
                                     class="text-lg font-bold text-gray-800 dark:text-white"
@@ -476,12 +482,10 @@
                                 </p>
                             </x-slot>
 
-                            <!-- Modal Content -->
                             <x-slot:content>
                                 <div v-show="! attributes.length">
                                     {!! view_render_event('bagisto.admin.catalog.products.create_form.general.controls.before') !!}
 
-                                    <!-- Product Type -->
                                     <x-admin::form.control-group>
                                         <x-admin::form.control-group.label class="required">
                                             @lang('admin::app.catalog.products.index.create.type')
@@ -503,7 +507,6 @@
                                         <x-admin::form.control-group.error control-name="type" />
                                     </x-admin::form.control-group>
 
-                                    <!-- Attribute Family Id -->
                                     <x-admin::form.control-group>
                                         <x-admin::form.control-group.label class="required">
                                             @lang('admin::app.catalog.products.index.create.family')
@@ -528,7 +531,6 @@
                                         <x-admin::form.control-group.error control-name="attribute_family_id" />
                                     </x-admin::form.control-group>
 
-                                    <!-- SKU -->
                                     <x-admin::form.control-group>
                                         <x-admin::form.control-group.label class="required">
                                             @lang('admin::app.catalog.products.index.create.sku')
@@ -580,10 +582,8 @@
                                 </div>
                             </x-slot>
 
-                            <!-- Modal Footer -->
                             <x-slot:footer>
                                 <div class="flex items-center gap-x-2.5">
-                                    <!-- Back Button -->
                                     <x-admin::button
                                         button-type="button"
                                         class="transparent-button hover:bg-gray-200 dark:text-white dark:hover:bg-gray-800"
@@ -592,7 +592,6 @@
                                         @click="attributes = []"
                                     />
 
-                                    <!-- Save Button -->
                                     <x-admin::button
                                         button-type="button"
                                         class="primary-button"

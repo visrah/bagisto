@@ -1,7 +1,6 @@
 {!! view_render_event('bagisto.admin.catalog.product.edit.form.inventories.controls.before', ['product' => $product]) !!}
 
 <v-inventories>
-    <!-- Panel Content -->
     <div class="mb-5 text-sm text-gray-600 dark:text-gray-300">
         <div class="relative mb-2.5 flex items-center">
             <span class="inline-block rounded-full bg-yellow-500 p-1.5 ltr:mr-1.5 rtl:ml-1.5"></span>
@@ -20,13 +19,12 @@
 
     @foreach (app(\Webkul\Inventory\Repositories\InventorySourceRepository::class)->findWhere(['status' => 1]) as $inventorySource)
         @php
-            $qty = old('inventories[' . $inventorySource->id . ']')
-                ?: ($product->inventories->where('inventory_source_id', $inventorySource->id)->pluck('qty')->first() ?? 0);
+            $qty = old('inventories.' . $inventorySource->id, $product->inventories->where('inventory_source_id', $inventorySource->id)->pluck('qty')->first() ?? 0);
         @endphp
 
         <x-admin::form.control-group>
             <x-admin::form.control-group.label v-pre>
-                {{ $inventorySource->name }}
+                {{ config('shop_setup.admin_mode') !== 'full' && core()->getDefaultChannel()->inventory_sources->count() === 1 ? trans('shop_setup::merchant.stock') : $inventorySource->name }}
             </x-admin::form.control-group.label>
 
             <x-admin::form.control-group.control

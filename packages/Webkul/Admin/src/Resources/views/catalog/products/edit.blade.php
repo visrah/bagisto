@@ -1,3 +1,5 @@
+@php $merchantMode = config('shop_setup.admin_mode') !== 'full'; @endphp
+
 <x-admin::layouts>
     <x-slot:title>
         @lang('admin::app.catalog.products.edit.title')
@@ -11,7 +13,6 @@
     >
         {!! view_render_event('bagisto.admin.catalog.product.edit.actions.before', ['product' => $product]) !!}
 
-        <!-- Page Header -->
         <div class="grid gap-2.5">
             <div class="flex items-center justify-between gap-4 max-sm:flex-wrap">
                 <div class="grid gap-1.5">
@@ -21,7 +22,6 @@
                 </div>
 
                 <div class="flex items-center gap-x-2.5">
-                    <!-- Back Button -->
                     <a
                         href="{{ route('admin.catalog.products.index') }}"
                         class="transparent-button hover:bg-gray-200 dark:text-white dark:hover:bg-gray-800"
@@ -29,7 +29,6 @@
                         @lang('admin::app.account.edit.back-btn')
                     </a>
 
-                    <!-- Preview Button -->
                     @if (
                         $product->status
                         && $product->visible_individually
@@ -44,7 +43,6 @@
                         </a>
                     @endif
 
-                    <!-- Save Button -->
                     <button class="primary-button">
                         @lang('admin::app.catalog.products.edit.save-btn')
                     </button>
@@ -60,12 +58,9 @@
             $currentLocale = core()->getAllLocales()->firstWhere('code', $currentChannel->resolveLocaleCode(core()->getRequestedLocaleCode()));
         @endphp
 
-        <!-- Channel and Locale Switcher -->
         <div class="mt-7 flex items-center justify-between gap-4 max-md:flex-wrap">
             <div class="flex items-center gap-x-1">
-                <!-- Channel Switcher -->
                 <x-admin::dropdown :class="$channels->count() <= 1 ? 'hidden' : ''">
-                    <!-- Dropdown Toggler -->
                     <x-slot:toggle>
                         <button
                             type="button"
@@ -85,7 +80,6 @@
                         </button>
                     </x-slot>
 
-                    <!-- Dropdown Content -->
                     <x-slot:content class="p-0!">
                         @foreach ($channels as $channel)
                             <a
@@ -99,9 +93,7 @@
                     </x-slot>
                 </x-admin::dropdown>
 
-                <!-- Locale Switcher -->
                 <x-admin::dropdown :class="$currentChannel->locales->count() <= 1 ? 'hidden' : ''">
-                    <!-- Dropdown Toggler -->
                     <x-slot:toggle>
                         <button
                             type="button"
@@ -121,7 +113,6 @@
                         </button>
                     </x-slot>
 
-                    <!-- Dropdown Content -->
                     <x-slot:content class="p-0!">
                         @foreach ($currentChannel->locales->sortBy('name') as $locale)
                             <a
@@ -139,7 +130,6 @@
 
         {!! view_render_event('bagisto.admin.catalog.product.edit.actions.after', ['product' => $product]) !!}
 
-        <!-- Body Content -->
         {!! view_render_event('bagisto.admin.catalog.product.edit.form.before', ['product' => $product]) !!}
 
         <div class="mt-3.5 flex gap-2.5 max-xl:flex-wrap">
@@ -181,6 +171,13 @@
                         @if ($customAttributes->isNotEmpty())
                             {!! view_render_event("bagisto.admin.catalog.product.edit.form.{$group->code}.before", ['product' => $product]) !!}
 
+                            @php $advancedGroup = $merchantMode && in_array($group->code, ['meta_description', 'shipping', 'settings', 'rma']); @endphp
+
+                            @if ($advancedGroup)
+                                <details @if ($errors->any()) open @endif>
+                                    <summary class="cursor-pointer rounded-sm border border-gray-200 p-4 font-semibold dark:border-gray-800 text-gray-900 dark:text-white">{{ $group->name }}</summary>
+                            @endif
+
                             <div class="box-shadow relative rounded-sm bg-white p-4 dark:bg-gray-900">
                                 <p
                                     class="mb-4 text-base font-semibold text-gray-800 dark:text-white"
@@ -195,6 +192,13 @@
 
                                 @foreach ($customAttributes as $attribute)
                                     {!! view_render_event("bagisto.admin.catalog.product.edit.form.{$group->code}.controls.before", ['product' => $product]) !!}
+
+                                    @php $advancedAttribute = $merchantMode && ! $advancedGroup && ! in_array($attribute->code, ['name', 'description', 'price', 'special_price', 'status', 'manage_stock']); @endphp
+
+                                    @if ($advancedAttribute)
+                                        <details @if ($errors->has($attribute->code)) open @endif class="mb-3">
+                                            <summary class="cursor-pointer py-2 text-sm font-medium text-gray-900 dark:text-white">{{ $attribute->admin_name }}</summary>
+                                    @endif
 
                                     <x-admin::form.control-group class="last:mb-0!">
                                         <x-admin::form.control-group.label>
@@ -212,7 +216,7 @@
                                                 </span>
                                             @endif
 
-                                            @if ($attribute->value_per_locale)
+                                            @if ($attribute->value_per_locale && $currentChannel->locales->count() > 1)
                                                 <span
                                                     class="rounded-sm border border-gray-200 bg-gray-100 px-1 py-0.5 text-[10px] font-semibold leading-normal text-gray-600"
                                                     v-pre
@@ -230,40 +234,59 @@
                                         <x-admin::form.control-group.error :control-name="$attribute->code . (in_array($attribute->type, ['multiselect', 'checkbox']) ? '[]' : '')" />
                                     </x-admin::form.control-group>
 
+                                    @if ($advancedAttribute)
+                                        </details>
+                                    @endif
+
                                     {!! view_render_event("bagisto.admin.catalog.product.edit.form.{$group->code}.controls.after", ['product' => $product]) !!}
                                 @endforeach
 
-                                @includeWhen($group->code == 'price', 'admin::catalog.products.edit.price.group')
+                                @if ($group->code === 'price')
+                                    <details @if (! $merchantMode || $errors->any()) open @endif>
+                                        <summary class="cursor-pointer py-3 font-medium text-gray-900 dark:text-white">@lang('shop_setup::merchant.advanced')</summary>
+                                        @include('admin::catalog.products.edit.price.group')
+                                    </details>
+                                @endif
 
                                 @includeWhen($group->code === 'inventories', 'admin::catalog.products.edit.inventories')
                             </div>
+
+                            @if ($advancedGroup)
+                                </details>
+                            @endif
 
                             {!! view_render_event("bagisto.admin.catalog.product.edit.form.{$group->code}.after", ['product' => $product]) !!}
                         @endif
                     @endforeach
 
                     @if ($column == 1)
-                        <!-- Images View Blade File -->
                         @include('admin::catalog.products.edit.images')
 
-                        <!-- Videos View Blade File -->
-                        @include('admin::catalog.products.edit.videos')
+                        <details @if (! $merchantMode || $errors->any()) open @endif>
+                            <summary class="cursor-pointer rounded-sm border border-gray-200 p-3 font-medium dark:border-gray-800 text-gray-900 dark:text-white">{{ trans('admin::app.catalog.products.edit.videos.title') }}</summary>
+                            @include('admin::catalog.products.edit.videos')
+                        </details>
 
-                        <!-- Product Type View Blade File -->
-                        @includeIf('admin::catalog.products.edit.types.' . $product->type)
+                        @if ($merchantMode && $product->type === 'simple')
+                            <details @if ($errors->any()) open @endif>
+                                <summary class="cursor-pointer rounded-sm border border-gray-200 p-3 font-medium dark:border-gray-800 text-gray-900 dark:text-white">@lang('shop_setup::merchant.advanced')</summary>
+                                @includeIf('admin::catalog.products.edit.types.' . $product->type)
+                            </details>
+                        @else
+                            @includeIf('admin::catalog.products.edit.types.' . $product->type)
+                        @endif
 
-                        <!-- Related, Cross Sells, Up Sells View Blade File -->
-                        @include('admin::catalog.products.edit.links')
+                        <details @if (! $merchantMode || $errors->any()) open @endif>
+                            <summary class="cursor-pointer rounded-sm border border-gray-200 p-3 font-medium dark:border-gray-800 text-gray-900 dark:text-white">{{ trans('shop_setup::merchant.advanced') }}</summary>
+                            @include('admin::catalog.products.edit.links')
+                        </details>
 
-                        <!-- Include Product Type Additional Blade Files If Any -->
                         @foreach ($product->getTypeInstance()->getAdditionalViews() as $view)
                             @includeIf($view)
                         @endforeach
                     @elseif (! $isSingleColumn)
-                        <!-- Channels View Blade File -->
                         @include('admin::catalog.products.edit.channels')
 
-                        <!-- Categories View Blade File -->
                         @include('admin::catalog.products.edit.categories')
                     @endif
                 </div>
@@ -277,28 +300,34 @@
                 )
                     <div class="w-90 max-w-full max-sm:w-full">
                         @if ($column == 2)
-                            <!-- Images View Blade File -->
                             @include('admin::catalog.products.edit.images')
 
-                            <!-- Videos View Blade File -->
+                            <details @if (! $merchantMode || $errors->any()) open @endif>
+                            <summary class="cursor-pointer rounded-sm border border-gray-200 p-3 font-medium dark:border-gray-800 text-gray-900 dark:text-white">{{ trans('admin::app.catalog.products.edit.videos.title') }}</summary>
                             @include('admin::catalog.products.edit.videos')
+                        </details>
 
-                            <!-- Product Type View Blade File -->
+                            @if ($merchantMode && $product->type === 'simple')
+                            <details @if ($errors->any()) open @endif>
+                                <summary class="cursor-pointer rounded-sm border border-gray-200 p-3 font-medium dark:border-gray-800 text-gray-900 dark:text-white">@lang('shop_setup::merchant.advanced')</summary>
+                                @includeIf('admin::catalog.products.edit.types.' . $product->type)
+                            </details>
+                        @else
                             @includeIf('admin::catalog.products.edit.types.' . $product->type)
+                        @endif
 
-                            <!-- Related, Cross Sells, Up Sells View Blade File -->
+                            <details @if (! $merchantMode || $errors->any()) open @endif>
+                            <summary class="cursor-pointer rounded-sm border border-gray-200 p-3 font-medium dark:border-gray-800 text-gray-900 dark:text-white">{{ trans('shop_setup::merchant.advanced') }}</summary>
                             @include('admin::catalog.products.edit.links')
+                        </details>
 
-                            <!-- Include Product Type Additional Blade Files If Any -->
                             @foreach ($product->getTypeInstance()->getAdditionalViews() as $view)
                                 @includeIf($view)
                             @endforeach
                         @endif
 
-                        <!-- Channels View Blade File -->
                         @include('admin::catalog.products.edit.channels')
 
-                        <!-- Categories View Blade File -->
                         @include('admin::catalog.products.edit.categories')
                     </div>
                 @endif
