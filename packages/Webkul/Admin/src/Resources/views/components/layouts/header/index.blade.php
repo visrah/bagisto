@@ -4,14 +4,15 @@
 
 <header class="sticky top-0 z-10001 flex items-center justify-between border-b bg-white px-2 py-2 dark:border-gray-800 dark:bg-gray-900 sm:px-4 sm:py-2.5">
     <div class="flex items-center gap-1 sm:gap-1.5">
-        <!-- Hamburger Menu -->
-        <i
+        <button
+            type="button"
+            aria-label="{{ trans('shop_setup::merchant.toggle-navigation') }}"
+            aria-haspopup="dialog"
             class="icon-menu cursor-pointer rounded-md p-1.5 text-xl hover:bg-gray-100 dark:hover:bg-gray-950 lg:hidden sm:text-2xl"
             @click="$refs.sidebarMenuDrawer.open()"
         >
-        </i>
+        </button>
 
-        <!-- Logo -->
         <a href="{{ route('admin.dashboard.index') }}" class="shrink-0">
             @if ($logo = core()->getConfigData('general.design.admin_logo.logo_image'))
                 <img
@@ -29,7 +30,6 @@
             @endif
         </a>
 
-        <!-- Mega Search Bar Vue Component -->
         <v-mega-search class="hidden sm:block">
             <div class="relative flex w-50 items-center sm:w-75 md:w-100 lg:w-131.25 xl:max-w-131.25 ltr:ml-2 rtl:mr-2 sm:ltr:ml-2.5 sm:rtl:mr-2.5">
                 <i class="icon-search absolute top-1.5 flex items-center text-xl ltr:left-2 rtl:right-2 sm:text-2xl sm:ltr:left-3 sm:rtl:right-3"></i>
@@ -40,7 +40,7 @@
                     placeholder="@lang('admin::app.components.layouts.header.mega-search.title')"
                 >
 
-                <kbd class="pointer-events-none absolute top-1/2 flex -translate-y-1/2 animate-pulse items-center gap-0.5 rounded border border-violet-300 bg-violet-50 px-2 py-1 font-sans text-[11px] font-semibold leading-none text-violet-700 dark:border-violet-500/40 dark:bg-violet-500/10 dark:text-violet-300 ltr:right-2 rtl:left-2 sm:ltr:right-3 sm:rtl:left-3">
+                <kbd class="pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center gap-0.5 rounded border border-violet-300 bg-violet-50 px-2 py-1 font-sans text-[11px] font-semibold leading-none text-violet-700 dark:border-violet-500/40 dark:bg-violet-500/10 dark:text-violet-300 ltr:right-2 rtl:left-2 sm:ltr:right-3 sm:rtl:left-3">
                     @lang('admin::app.components.layouts.header.mega-search.shortcut')
                 </kbd>
             </div>
@@ -48,7 +48,6 @@
     </div>
 
     <div class="flex items-center gap-1 sm:gap-2.5">
-        <!-- Dark Mode Switcher -->
         <v-dark>
             <div class="flex">
                 <span
@@ -57,7 +56,6 @@
             </div>
         </v-dark>
 
-        <!-- Visit Shop Link -->
         <a
             href="{{ route('shop.home.index') }}"
             target="_blank"
@@ -70,7 +68,6 @@
             </span>
         </a>
 
-       <!-- Notification Component -->
         @if (bouncer()->hasPermission('sales.orders'))
             <v-notifications {{ $attributes }}>
                 <span class="relative flex">
@@ -83,7 +80,6 @@
             </v-notifications>
         @endif
 
-        <!-- Admin Profile -->
         <x-admin::dropdown position="bottom-{{ core()->getCurrentLocale()->direction === 'ltr' ? 'right' : 'left' }}">
             <x-slot:toggle>
                 @if ($admin->image)
@@ -100,7 +96,6 @@
                 @endif
             </x-slot>
 
-            <!-- Admin Dropdown -->
             <x-slot:content class="p-0!">
                 <div class="flex items-center gap-1.5 border border-b-gray-300 px-4 py-2 dark:border-gray-800 sm:px-5 sm:py-2.5">
                     <img
@@ -110,7 +105,6 @@
                         height="20"
                     />
 
-                    <!-- Version -->
                     <p class="text-xs text-gray-400 sm:text-sm">
                         @lang('admin::app.components.layouts.header.app-version', ['version' => 'v' . core()->version()])
                     </p>
@@ -124,7 +118,6 @@
                         @lang('admin::app.components.layouts.header.my-account')
                     </a>
 
-                    <!-- Admin Logout -->
                     <x-admin::form
                         method="DELETE"
                         action="{{ route('admin.session.destroy') }}"
@@ -145,13 +138,11 @@
     </div>
 </header>
 
-<!-- Menu Sidebar Drawer -->
 <x-admin::drawer
     position="left"
     width="270px"
     ref="sidebarMenuDrawer"
 >
-    <!-- Drawer Header -->
     <x-slot:header>
         <div class="flex items-center justify-between">
             @if ($logo = core()->getConfigData('general.design.admin_logo.logo_image'))
@@ -171,15 +162,15 @@
         </div>
     </x-slot>
 
-    <!-- Drawer Content -->
     <x-slot:content class="p-3 sm:p-4">
         <div class="journal-scroll h-[calc(100vh-100px)] overflow-auto">
             <nav class="grid w-full gap-1.5 sm:gap-2">
-                <!-- Navigation Menu -->
                 @foreach (menu()->getItems('admin') as $menuItem)
                     <div class="group/item relative">
                         <a
                             href="{{ $menuItem->getUrl() }}"
+                            aria-label="{{ $menuItem->getName() }}"
+                            @if ($menuItem->isActive()) aria-current="page" @endif
                             class="flex items-center gap-2 p-1.5 cursor-pointer hover:rounded-lg {{ $menuItem->isActive() == 'active' ? 'bg-blue-600 rounded-lg' : ' hover:bg-gray-100 hover:dark:bg-gray-950' }} peer sm:gap-2.5"
                         >
                             <span class="{{ $menuItem->getIcon() }} text-xl {{ $menuItem->isActive() ? 'text-white' : ''}} sm:text-2xl"></span>
@@ -190,7 +181,7 @@
                         </a>
 
                         @if ($menuItem->haveChildren())
-                            <div class="{{ $menuItem->isActive() ? ' grid! bg-gray-100 dark:bg-gray-950' : '' }} hidden min-w-45 ltr:pl-8 rtl:pr-8 pb-2 rounded-b-lg z-[100] sm:ltr:pl-10 sm:rtl:pr-10">
+                            <div class="grid min-w-45 ltr:pl-8 rtl:pr-8 pb-2 rounded-b-lg z-[100] sm:ltr:pl-10 sm:rtl:pr-10">
                                 @foreach ($menuItem->getChildren() as $subMenuItem)
                                     <a
                                         href="{{ $subMenuItem->getUrl() }}"
@@ -217,12 +208,10 @@
                     </div>
                 @endforeach
 
-                <!-- Help & Resources -->
                 @php
                     $isHelpActive = request()->routeIs('admin.help.index');
                 @endphp
 
-                <!-- Divider -->
                 <div class="my-1 border-t border-gray-200 dark:border-gray-800"></div>
 
                 <div class="group/item relative">
@@ -274,7 +263,7 @@
 
             <kbd
                 v-show="! isDropdownOpen"
-                class="pointer-events-none absolute top-1/2 flex -translate-y-1/2 animate-pulse items-center gap-0.5 rounded border border-violet-300 bg-violet-50 px-2 py-1 font-sans text-[11px] font-semibold leading-none text-violet-700 dark:border-violet-500/40 dark:bg-violet-500/10 dark:text-violet-300 ltr:right-2 rtl:left-2 sm:ltr:right-3 sm:rtl:left-3"
+                class="pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center gap-0.5 rounded border border-violet-300 bg-violet-50 px-2 py-1 font-sans text-[11px] font-semibold leading-none text-violet-700 dark:border-violet-500/40 dark:bg-violet-500/10 dark:text-violet-300 ltr:right-2 rtl:left-2 sm:ltr:right-3 sm:rtl:left-3"
             >
                 @lang('admin::app.components.layouts.header.mega-search.shortcut')
             </kbd>
@@ -283,7 +272,6 @@
                 class="absolute top-8 z-10 w-full rounded-lg border bg-white shadow-[0px_0px_0px_0px_rgba(0,0,0,0.10),0px_1px_3px_0px_rgba(0,0,0,0.10),0px_5px_5px_0px_rgba(0,0,0,0.09),0px_12px_7px_0px_rgba(0,0,0,0.05),0px_22px_9px_0px_rgba(0,0,0,0.01),0px_34px_9px_0px_rgba(0,0,0,0.00)] dark:border-gray-800 dark:bg-gray-900 sm:top-10"
                 v-if="isDropdownOpen"
             >
-                <!-- Search Tabs -->
                 <div class="flex border-b text-xs text-gray-600 dark:border-gray-800 dark:text-gray-300 sm:text-sm">
                     <div
                         class="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-950 sm:p-4"
@@ -295,7 +283,6 @@
                     </div>
                 </div>
 
-                <!-- Searched Results -->
                 <template v-if="activeTab == 'products'">
                     <template v-if="isLoading">
                         <x-admin::shimmer.header.mega-search.products />
@@ -308,9 +295,7 @@
                                 class="flex cursor-pointer justify-between gap-2 border-b border-slate-300 p-3 last:border-b-0 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-gray-950 sm:gap-2.5 sm:p-4"
                                 v-for="product in searchedResults.products.data"
                             >
-                                <!-- Left Information -->
                                 <div class="flex gap-2 sm:gap-2.5">
-                                    <!-- Image -->
                                     <div
                                         class="relative h-10 max-h-10 w-full max-w-10 overflow-hidden rounded-sm sm:h-15 sm:max-h-15 sm:max-w-15"
                                         :class="{'overflow-hidden rounded border border-dashed border-gray-300 dark:border-gray-800 dark:mix-blend-exclusion dark:invert': ! product.images.length}"
@@ -328,7 +313,6 @@
                                         </template>
                                     </div>
 
-                                    <!-- Details -->
                                     <div class="grid place-content-start gap-1 sm:gap-1.5">
                                         <p class="text-sm font-semibold text-gray-600 dark:text-gray-300 sm:text-base">
                                             @{{ product.name }}
@@ -340,7 +324,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Right Information -->
                                 <div class="grid place-content-center gap-1 text-right">
                                     <p class="text-sm font-semibold text-gray-600 dark:text-gray-300 sm:text-base">
                                         @{{ product.formatted_price }}
@@ -682,7 +665,6 @@
         id="v-notifications-template"
     >
         <x-admin::dropdown position="bottom-{{ core()->getCurrentLocale()->direction === 'ltr' ? 'right' : 'left' }}">
-            <!-- Notification Toggle -->
             <x-slot:toggle>
                 <span class="relative flex">
                     <span
@@ -700,21 +682,17 @@
                 </span>
             </x-slot>
 
-            <!-- Notification Content -->
             <x-slot:content class="min-w-62.5 max-w-62.5 p-0!">
-                <!-- Header -->
                 <div class="border-b p-3 text-base font-semibold text-gray-600 dark:border-gray-800 dark:text-gray-300">
                     @lang('admin::app.notifications.title', ['read' => 0])
                 </div>
 
-                <!-- Content -->
                 <div class="grid">
                     <a
                         class="flex items-start gap-1.5 border-b p-3 last:border-b-0 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-950"
                         v-for="notification in notifications"
                         :href="'{{ route('admin.notification.viewed_notification', ':orderId') }}'.replace(':orderId', notification.order_id)"
                     >
-                        <!-- Notification Icon -->
                         <span
                             v-if="notification.order.status in notificationStatusIcon"
                             class="h-fit"
@@ -723,13 +701,11 @@
                         </span>
 
                         <div class="grid">
-                            <!-- Order Id & Status -->
                             <p class="text-gray-800 dark:text-white">
                                 #@{{ notification.order.id }}
                                 @{{ orderTypeMessages[notification.order.status] }}
                             </p>
 
-                            <!-- Created Date In humand Readable Format -->
                             <p class="text-xs text-gray-600 dark:text-gray-300">
                                 @{{ notification.order.datetime }}
                             </p>
@@ -737,7 +713,6 @@
                     </a>
                 </div>
 
-                <!-- Footer -->
                 <div class="flex h-11.75 justify-between gap-1.5 border-t px-6 py-4 dark:border-gray-800">
                     <a
                         href="{{ route('admin.notification.index') }}"

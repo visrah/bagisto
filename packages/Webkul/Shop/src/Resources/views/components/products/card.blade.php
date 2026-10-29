@@ -9,7 +9,6 @@
         type="text/x-template"
         id="v-product-card-template"
     >
-        <!-- Grid Card -->
         <div
             data-slot="card"
             class="1180:transtion-all group w-full rounded-md 1180:relative 1180:grid 1180:content-start 1180:overflow-hidden 1180:duration-300 1180:hover:shadow-[0_5px_10px_rgba(0,0,0,0.1)]"
@@ -18,7 +17,6 @@
             <div data-slot="card-media" class="relative max-h-75 max-w-72.75 overflow-hidden max-md:max-h-60 max-md:max-w-full max-md:rounded-lg max-sm:max-h-50 max-sm:max-w-full">
                 {!! view_render_event('bagisto.shop.components.products.card.image.before') !!}
 
-                <!-- Product Image -->
                 <a
                     :href="'{{ route('shop.product_or_category.index', ':slug') }}'.replace(':slug', product.url_key)"
                     :aria-label="product.name"
@@ -41,7 +39,6 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.image.after') !!}
 
-                <!-- Product Ratings -->
                 {!! view_render_event('bagisto.shop.components.products.card.average_ratings.before') !!}
 
                 @if (core()->getConfigData('catalog.products.review.summary') == 'star_counts')
@@ -65,7 +62,6 @@
                 {!! view_render_event('bagisto.shop.components.products.card.average_ratings.after') !!}
 
                 <div class="action-items bg-black">
-                    <!-- Product Sale Badge -->
                     <p
                         class="absolute top-1.5 inline-block rounded-[44px] bg-red-600 px-2.5 text-sm text-white max-sm:rounded-l-none max-sm:rounded-r-xl max-sm:px-2 max-sm:py-0.5 max-sm:text-xs ltr:left-1.5 max-sm:ltr:left-0 rtl:right-5 max-sm:rtl:right-0"
                         v-if="product.on_sale"
@@ -73,7 +69,6 @@
                         @lang('shop::app.components.products.card.sale')
                     </p>
 
-                    <!-- Product New Badge -->
                     <p
                         class="absolute top-1.5 inline-block rounded-[44px] bg-navyBlue px-2.5 text-sm text-white max-sm:rounded-l-none max-sm:rounded-r-xl max-sm:px-2 max-sm:py-0.5 max-sm:text-xs ltr:left-1.5 max-sm:ltr:left-0 rtl:right-1.5 max-sm:rtl:right-0"
                         v-else-if="product.is_new"
@@ -118,8 +113,7 @@
                 </div>
             </div>
 
-            <!-- Product Information Section -->
-            <div data-slot="card-info" class="-mt-9 grid max-w-72.75 translate-y-9 content-start gap-2.5 bg-white p-2.5 transition-transform duration-300 ease-out group-hover:translate-y-0 group-hover:rounded-t-lg max-md:relative max-md:mt-0 max-md:translate-y-0 max-md:gap-0 max-md:px-0 max-md:py-1.5 max-sm:min-w-42.5 max-sm:max-w-48">
+            <div data-slot="card-info" class="grid max-w-full content-start gap-2.5 bg-white p-2.5 transition-transform duration-300 ease-out max-md:relative max-md:mt-0 max-md:translate-y-0 max-md:gap-0 max-md:px-0 max-md:py-1.5 max-sm:max-w-full">
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.before') !!}
 
@@ -129,7 +123,6 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.after') !!}
 
-                <!-- Pricing -->
                 {!! view_render_event('bagisto.shop.components.products.card.price.before') !!}
 
                 <div
@@ -138,10 +131,11 @@
                 >
                 </div>
 
+                <p v-if="! product.is_saleable" class="text-sm font-medium text-zinc-700">@lang('shop_setup::merchant.unavailable')</p>
+
                 {!! view_render_event('bagisto.shop.components.products.card.price.after') !!}
 
-                <!-- Product Actions Section -->
-                <div class="action-items flex items-center justify-between opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 max-md:hidden">
+                <div class="action-items flex items-center justify-between max-md:hidden">
                     @if (core()->getConfigData('sales.checkout.shopping_cart.cart_page'))
                         {!! view_render_event('bagisto.shop.components.products.card.add_to_cart.before') !!}
 
@@ -190,7 +184,6 @@
             </div>
         </div>
 
-        <!-- List Card -->
         <div
             class="relative flex max-w-max grid-cols-2 gap-4 overflow-hidden rounded-sm max-sm:flex-wrap"
             v-else
@@ -281,6 +274,8 @@
                     v-html="product.price_html"
                 >
                 </div>
+
+                <p v-if="! product.is_saleable" class="text-sm font-medium text-zinc-700">@lang('shop_setup::merchant.unavailable')</p>
 
                 {!! view_render_event('bagisto.shop.components.products.card.price.after') !!}
 

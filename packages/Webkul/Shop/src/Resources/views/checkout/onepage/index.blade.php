@@ -1,4 +1,3 @@
-<!-- SEO Meta Content -->
 @push('meta')
     <meta name="description" content="@lang('shop::app.checkout.onepage.index.checkout')"/>
 
@@ -10,14 +9,12 @@
     :has-feature="false"
     :has-footer="false"
 >
-    <!-- Page Title -->
     <x-slot:title>
         @lang('shop::app.checkout.onepage.index.checkout')
     </x-slot>
 
     {!! view_render_event('bagisto.shop.checkout.onepage.header.before') !!}
 
-    <!-- Page Header -->
     <div class="flex-wrap">
         <div class="flex w-full justify-between border border-b border-l-0 border-r-0 border-t-0 px-15 py-4 max-lg:px-8 max-sm:px-4">
             <div class="flex items-center gap-x-14 max-[1180px]:gap-x-9">
@@ -43,21 +40,17 @@
 
     {!! view_render_event('bagisto.shop.checkout.onepage.header.after') !!}
 
-    <!-- Page Content -->
     <div class="container px-15 max-lg:px-8 max-sm:px-4">
 
         {!! view_render_event('bagisto.shop.checkout.onepage.breadcrumbs.before') !!}
 
-        <!-- Breadcrumbs -->
         @if ((core()->getConfigData('general.general.breadcrumbs.shop')))
             <x-shop::breadcrumbs name="checkout" />
         @endif
 
         {!! view_render_event('bagisto.shop.checkout.onepage.breadcrumbs.after') !!}
 
-        <!-- Checkout Vue Component -->
         <v-checkout>
-            <!-- Shimmer Effect -->
             <x-shop::shimmer.checkout.onepage />
         </v-checkout>
     </div>
@@ -68,13 +61,11 @@
             id="v-checkout-template"
         >
             <template v-if="! cart">
-                <!-- Shimmer Effect -->
                 <x-shop::shimmer.checkout.onepage />
             </template>
 
             <template v-else>
                 <div class="grid grid-cols-[1fr_auto] gap-8 max-lg:grid-cols-[1fr] max-md:gap-5">
-                    <!-- Included Checkout Summary Blade File For Mobile view -->
                     <div class="hidden max-md:block">
                         @include('shop::checkout.onepage.summary')
                     </div>
@@ -83,23 +74,19 @@
                         class="overflow-y-auto max-md:grid max-md:gap-4"
                         id="steps-container"
                     >
-                        <!-- Included Addresses Blade File -->
                         <template v-if="['address', 'shipping', 'payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.address')
                         </template>
 
-                        <!-- Included Shipping Methods Blade File -->
                         <template v-if="cart.have_stockable_items && ['shipping', 'payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.shipping')
                         </template>
 
-                        <!-- Included Payment Methods Blade File -->
                         <template v-if="['payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.payment')
                         </template>
                     </div>
 
-                    <!-- Included Checkout Summary Blade File For Desktop view -->
                     <div class="sticky top-8 block h-max w-110.5 max-w-full max-lg:w-auto max-lg:max-w-110.5 ltr:pl-8 max-lg:ltr:pl-0 rtl:pr-8 max-lg:rtl:pr-0">
                         <div class="block max-md:hidden">
                             @include('shop::checkout.onepage.summary')
@@ -112,7 +99,6 @@
                             <template v-if="(selectedPaymentMethod || cart.payment_method) == 'paypal_smart_button'">
                                 {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.before') !!}
 
-                                <!-- Paypal Smart Button Vue Component -->
                                 <v-paypal-smart-button></v-paypal-smart-button>
 
                                 {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.after') !!}
@@ -225,6 +211,10 @@
                     },
 
                     placeOrder() {
+                        if (this.isPlacingOrder) {
+                            return;
+                        }
+
                         if ((this.selectedPaymentMethod || this.cart.payment_method) == 'paypal_smart_button') {
                             return;
                         }
@@ -233,18 +223,26 @@
 
                         this.$axios.post('{{ route('shop.checkout.onepage.orders.store') }}')
                             .then(response => {
-                                if (response.data.data.redirect) {
-                                    window.location.href = response.data.data.redirect_url;
-                                } else {
-                                    window.location.href = '{{ route('shop.checkout.onepage.success') }}';
+                                const result = response.data.data;
+
+                                if (result.redirect && result.redirect_url) {
+                                    window.location.href = result.redirect_url;
+                                    return;
                                 }
 
                                 this.isPlacingOrder = false;
+                                this.$emitter.emit('add-flash', {
+                                    type: 'error',
+                                    message: result.message || @json(trans('shop_setup::merchant.checkout-error')),
+                                });
                             })
                             .catch(error => {
-                                this.isPlacingOrder = false
+                                this.isPlacingOrder = false;
 
-                                this.$emitter.emit('add-flash', { type: 'error', message: error.response.data.message });
+                                this.$emitter.emit('add-flash', {
+                                    type: 'error',
+                                    message: error.response?.data?.message || @json(trans('shop_setup::merchant.checkout-error')),
+                                });
                             });
                     }
                 },

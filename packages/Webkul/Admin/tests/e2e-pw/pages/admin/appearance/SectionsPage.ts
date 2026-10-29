@@ -19,7 +19,7 @@ export class SectionsPage extends BasePage {
     }
 
     private get closeDrawerButton() {
-        return this.page.locator("div.fixed div.absolute > span.icon-cross");
+        return this.page.locator("div.fixed div.absolute > .icon-cross");
     }
 
     private get agreeButton() {

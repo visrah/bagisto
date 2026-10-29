@@ -2,6 +2,7 @@
     'isActive' => false,
     'position' => 'right',
     'width'    => '500px',
+    'label'    => trans('shop_setup::merchant.panel'),
 ])
 
 <v-drawer
@@ -9,6 +10,7 @@
     is-active="{{ $isActive }}"
     position="{{ $position }}"
     width="{{ $width }}"
+    label="{{ $label }}"
 >
     @isset($toggle)
         <template v-slot:toggle>
@@ -22,11 +24,13 @@
                 {{ $header }}
 
                 <div class="absolute top-3 ltr:right-3 rtl:left-3">
-                    <span
+                    <button
+                        type="button"
+                        aria-label="{{ trans('shop_setup::merchant.close') }}"
                         class="icon-cross cursor-pointer text-3xl hover:rounded-md hover:bg-gray-100 dark:hover:bg-gray-950"
                         @click="close"
                     >
-                    </span>
+                    </button>
                 </div>
             </div>
         </template>
@@ -55,13 +59,11 @@
         id="v-drawer-template"
     >
         <div>
-            <!-- Toggler -->
             <div @click="open">
                 <slot name="toggle">
                 </slot>
             </div>
 
-            <!-- Overlay -->
             <transition
                 tag="div"
                 name="drawer-overlay"
@@ -75,10 +77,10 @@
                 <div
                     class="fixed inset-0 z-10001 bg-gray-500/50 transition-opacity"
                     v-show="isOpen"
+                    @click="close"
                 ></div>
             </transition>
 
-            <!-- Content -->
             <transition
                 tag="div"
                 name="drawer"
@@ -90,6 +92,13 @@
                 :leave-to-class="enterFromLeaveToClasses"
             >
                 <div
+                    ref="panel"
+                    role="dialog"
+                    aria-modal="true"
+                    :aria-label="label"
+                    tabindex="-1"
+                    @keydown.esc.stop.prevent="close"
+                    @keydown.tab="trapFocus"
                     class="fixed z-10002 bg-white dark:bg-gray-900 max-sm:w-full!"
                     :class="{
                         'inset-x-0 top-0': position == 'top',
@@ -104,17 +113,14 @@
                         <div class="flex h-full w-full flex-col">
                             <div class="min-h-0 min-w-0 flex-1 overflow-auto">
                                 <div class="flex h-full flex-col">
-                                    <!-- Header Slot-->
                                     <slot
                                         name="header"
                                         :close="close"
                                     >
                                     </slot>
 
-                                    <!-- Content Slot -->
                                     <slot name="content"></slot>
 
-                                    <!-- Footer Slot -->
                                     <slot name="footer"></slot>
                                 </div>
                             </div>
@@ -132,16 +138,27 @@
             props: [
                 'isActive',
                 'position',
-                'width'
+                'width',
+                'label'
             ],
 
             data() {
                 return {
                     isOpen: this.isActive,
+                    returnFocus: null,
                 };
             },
 
             watch: {
+                isOpen(value) {
+                    if (value) {
+                        this.returnFocus = document.activeElement;
+                        this.$nextTick(() => this.$refs.panel?.focus());
+                    } else {
+                        this.returnFocus?.focus();
+                    }
+                },
+
                 isActive: function(newVal, oldVal) {
                     this.isOpen = newVal;
                 }
@@ -162,6 +179,25 @@
             },
 
             methods: {
+                trapFocus(event) {
+                    const panel = this.$refs.panel;
+                    const controls = [...panel.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex="0"]')]
+                        .filter(element => element.getClientRects().length > 0);
+                    const first = controls[0];
+                    const last = controls[controls.length - 1];
+
+                    if (! first) {
+                        event.preventDefault();
+                        panel.focus();
+                    } else if (event.shiftKey && (document.activeElement === first || document.activeElement === panel)) {
+                        event.preventDefault();
+                        last.focus();
+                    } else if (! event.shiftKey && (document.activeElement === last || document.activeElement === panel)) {
+                        event.preventDefault();
+                        first.focus();
+                    }
+                },
+
                 toggle() {
                     this.isOpen = ! this.isOpen;
 
